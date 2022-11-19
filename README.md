@@ -89,7 +89,7 @@ or `com.xiaomi.wearable` depending on your region)
 ### Notes
 - Images can have any names and can be placed in any folder
 - All categories, types, formats, and coordinate_types can be found in `constants.py`
-
+- Examples can be found in ./examples/watchfaces/decoded
 
 -----
 # Examples
