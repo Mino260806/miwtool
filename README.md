@@ -31,7 +31,7 @@ Android/data/$PACKAGE_NAME/files/WatchFace
 or `com.xiaomi.wearable` depending on your region)
 
 ## Unpacked folder tree
-```commandline
+```
 .
 ├── config.json
 ├── images_0
@@ -94,4 +94,8 @@ or `com.xiaomi.wearable` depending on your region)
 -----
 # Example
 
-![alt](demos/decoder_1.png)
+Decoded "Multifunction" watchface from Mi Fitness
+>! ![decoder](demos/decoder_1.png)
+
+Custom watchface created from scratch and uploaded to the watch
+>! ![encoder](demos/encoder_1.jpg)
