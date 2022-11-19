@@ -92,10 +92,19 @@ or `com.xiaomi.wearable` depending on your region)
 
 
 -----
-# Example
+# Examples
 
-Decoded "Multifunction" watchface from Mi Fitness
->! ![decoder](demos/decoder_1.png)
+<details>
+  <summary>Decoded "Multifunction" watchface from Mi Fitness</summary>
 
-Custom watchface created from scratch and uploaded to the watch
->! ![encoder](demos/encoder_1.jpg)
+![decoder](examples/decoder_1.png)
+
+</details>
+  
+<details>
+  <summary>Custom watchface created from scratch and uploaded to the watch 
+(excuse my poor design lol) </summary>
+
+![encoder](examples/encoder_1.jpg)
+
+</details>
