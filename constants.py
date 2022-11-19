@@ -1,3 +1,5 @@
+from enum import Enum
+
 from bidict import bidict
 
 HEADER = b"\x5A\xA5\x34\x12"
@@ -152,3 +154,64 @@ INVERSE_WIDGET_TYPES = {}
 
 for value, category in list(WIDGET_TYPES.items()):
     INVERSE_WIDGET_TYPES[category.category_name] = value
+
+
+
+class CoordinateRelative:
+    def __init__(self, cid, relx, rely, is_number=True, is_clock=False, zero_padding=False):
+        self.cid = cid
+        self.relx = relx
+        self.rely = rely
+        self.zero_padding = zero_padding
+        self.is_number = is_number
+        self.is_clock = is_clock
+
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return self.cid == other
+        if isinstance(other, self.__class__):
+            return self.relx == other.relx and \
+                   self.rely == other.rely and \
+                   self.zero_padding == other.zero_padding and \
+                   self.is_number == other.is_number and \
+                   self.is_clock == other.is_clock
+        return super().__eq__(other)
+
+    def __str__(self):
+        return f"CoordinateRelative({self.relx.name}, {self.rely.name}, " \
+               f"zero_padding={self.zero_padding}, is_number={self.is_number}, is_clock={self.is_clock})"
+
+    def __hash__(self):
+        return hash(self.cid)
+
+
+class Format(Enum):
+    FORMAT_IMAGE = 0x0
+    FORMAT_DECIMAL_2_DIGITS = 0x2
+    FORMAT_DECIMAL_3_DIGITS = 0x3
+    FORMAT_DECIMAL_4_DIGITS = 0x4
+    FORMAT_DECIMAL_5_DIGITS = 0x5
+
+
+class CoordType(Enum):
+    START = 0
+    CENTER = 1
+    END = 2
+
+
+COORDINATES_TABLE = {
+    0x10: CoordinateRelative("NES", CoordType.END, CoordType.START),
+    0x11: CoordinateRelative("NSS", CoordType.START, CoordType.START),
+    0x12: CoordinateRelative("NCS", CoordType.CENTER, CoordType.START),
+
+    0x15: CoordinateRelative("NSS0", CoordType.START, CoordType.START, zero_padding=True),
+    0x16: CoordinateRelative("NCS0", CoordType.CENTER, CoordType.START, zero_padding=True), # TODO unsure
+
+    0x20: CoordinateRelative("SS", CoordType.START, CoordType.START, is_number=False),
+
+    0x30: CoordinateRelative("RSS", CoordType.START, CoordType.START, is_number=True, is_clock=True),
+}
+
+INVERSE_COORDINATES_TABLE = {}
+for value, coord_type in tuple(COORDINATES_TABLE.items()):
+    INVERSE_COORDINATES_TABLE[coord_type.cid] = value
