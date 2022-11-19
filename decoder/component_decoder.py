@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
 
-from constants import COMPONENT_DETAILS_OFFSETS, IMAGE_COMPONENT_OFFSETS, WIDGET_CONFIGURATION_OFFSETS
+from constants import COMPONENT_DETAILS_OFFSETS, IMAGE_COMPONENT_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, Format
 from decoder.base_decoder import Decoder
 from component import Component
 from image import ImageDecoder
@@ -56,7 +56,7 @@ class ComponentDecoder(Decoder):
                 component.max_degrees = WIDGET_CONFIGURATION_OFFSETS["max_degrees"].extract(self)
             has_values_ranges = WIDGET_CONFIGURATION_OFFSETS["has_values_ranges"].extract(self)
             if has_values_ranges == 0x2:
-                assert wformat == WidgetType.Format.FORMAT_IMAGE.value
+                assert wformat == Format.FORMAT_IMAGE.value
                 WIDGET_CONFIGURATION_OFFSETS["values_ranges_start"].goto(self)
                 doffset = WIDGET_CONFIGURATION_OFFSETS["values_ranges_start"].value
                 for i in range(0, self.offsets_info[0x7].size - doffset, 0x4):

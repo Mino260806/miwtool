@@ -1,4 +1,4 @@
-from constants import COMPONENT_DETAILS_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, IMAGE_COMPONENT_OFFSETS
+from constants import COMPONENT_DETAILS_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, IMAGE_COMPONENT_OFFSETS, Format
 from encoder.base_encoder import Encoder
 from image import ImageEncoder
 from widget_type import WidgetType
@@ -69,7 +69,7 @@ class ComponentEncoder(Encoder):
         property_index = self.bump_property()
 
         wtype, category, wformat, ctype = self.component.widget_type.get_int_properties()
-        if wformat == WidgetType.Format.FORMAT_IMAGE.value:
+        if wformat == Format.FORMAT_IMAGE.value:
             if self.component.pivot_x:
                 self.set_buffer(0x20)
             else:
