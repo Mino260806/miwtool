@@ -30,7 +30,9 @@ Android/data/$PACKAGE_NAME/files/WatchFace
 (`$PACKAGE_NAME` might be `com.mi.health` 
 or `com.xiaomi.wearable` depending on your region)
 
-## Unpacked folder tree
+## Details about unpacked file
+<details>
+  <summary>folder tree</summary>
 ```
 .
 ├── config.json
@@ -46,8 +48,11 @@ or `com.xiaomi.wearable` depending on your region)
 └── images_preview
     └── static.png
 ```
+</details>
 
-### config.json structure
+<details>
+<summary>config.json structure</summary>
+
 ```
 {
     "name": "Watch Face Name",
@@ -67,7 +72,11 @@ or `com.xiaomi.wearable` depending on your region)
 }
 ```
 
-### Component attributes
+</details>
+
+<details>
+<summary>component attributes</summary>
+
 
 | Attribute           | Condition       | Description                                      | Data type     |
 |---------------------|-----------------|--------------------------------------------------|---------------|
@@ -85,11 +94,15 @@ or `com.xiaomi.wearable` depending on your region)
 | max_value           | if R            | max_value that defines a rotation                | int16         |
 | max_degrees         | if R            | degrees corresponding to max_value (3600° is 2π) | int16         |
 | values_ranges       | if FORMAT_IMAGE | value range for each image                       | array[uint32] |
+</details>
 
-### Notes
+<details>
+<summary>[Notes]</summary>
+
 - Images can have any names and can be placed in any folder
 - All categories, types, formats, and coordinate_types can be found in `constants.py`
 - Examples can be found in ./examples/watchfaces/decoded
+</details>
 
 -----
 # Examples
