@@ -33,6 +33,7 @@ or `com.xiaomi.wearable` depending on your region)
 ## Details about unpacked file
 <details>
   <summary>folder tree</summary>
+
 ```
 .
 ├── config.json
