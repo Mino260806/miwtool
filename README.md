@@ -128,5 +128,6 @@ or `com.xiaomi.wearable` depending on your region)
   <summary>Custom watchface ported from another watch </summary>
 
 ![encoder](examples/encoder_2.jpg)
+Source: https://amazfitwatchfaces.com/gts/view/9999
 
 </details>
