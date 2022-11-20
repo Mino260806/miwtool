@@ -105,6 +105,9 @@ or `com.xiaomi.wearable` depending on your region)
 - Examples can be found in ./examples/watchfaces/decoded
 </details>
 
+## How to upload a custom watch face to the watch
+https://github.com/Mino260806/mi-watchface-uploader
+
 -----
 # Examples
 
