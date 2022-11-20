@@ -126,8 +126,8 @@ WIDGET_TYPES = {
     })),
     0x12: WidgetCategory("DAY", bidict({
         0x20: "DAY_OF_WEEK",
-        0x10: "DAY_OF_MONTH",
-        0x18: "MONTH"
+        0x10: "MONTH",
+        0x18: "DAY_OF_MONTH"
     })),
     0x41: WidgetCategory("BATTERY", bidict({
         0x8: "NORMAL",
