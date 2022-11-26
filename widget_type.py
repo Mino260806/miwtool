@@ -63,5 +63,5 @@ class WidgetType:
         wformat_d = dump.get("format")
         coordinate_types_d = dump.get("coordinate_types")
 
-        return cls.from_string_attrs(category_d, wtype_d, wformat_d, coordinate_types_d)
+        return cls.from_string_attrs(wtype_d, category_d, wformat_d, coordinate_types_d)
 
