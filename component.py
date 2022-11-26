@@ -19,6 +19,8 @@ class Component:
         self.x = None
         self.y = None
         self.width = None
+        self.swidth = None
+        self.sheight = None
         self.height = None
         self.values_ranges = []
         self.frames_count = None
@@ -109,3 +111,13 @@ class Component:
                     self.height = image.size[1]
         else:
             self.frames_count = 0
+
+    def resolve(self):
+        if self.frames_count is None:
+            self.frames_count = len(self.images) if self.images else 0
+        if self.images and (self.width is None or self.height is None):
+            self.width = self.images[0].size[0]
+            self.height = self.images[0].size[1]
+        if self.static_image and (self.swidth is None or self.sheight is None):
+            self.swidth = self.static_image.size[0]
+            self.sheight = self.static_image.size[1]

@@ -5,13 +5,20 @@ from memory.saver import Saver
 
 
 from argparse import ArgumentParser
+import os
+
+from wfeditor.parser import WFEditorParser
 
 
 def execute_tests():
-    pass
+    global parser
+    parser = WFEditorParser("/home/amin/Documents/WatchFace/wfceditor/raw/test")
 
 
-if __name__ == '__main__':
+if "TEST" in os.environ:
+    execute_tests()
+
+elif __name__ == '__main__':
     parser = ArgumentParser(
         description='decode / encode Redmi Watch 2 Lite watch faces',
         epilog='//// coded by Amin Guermazi'
@@ -20,6 +27,8 @@ if __name__ == '__main__':
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument("-d", "--decode", type=str)
     group.add_argument("-e", "--encode", type=str)
+    group.add_argument("-dw", "--decode_wfeditor", type=str)
+    group.add_argument("-ew", "--encode_wfeditor", type=str)
     parser.add_argument("-o", "--output", type=str, default="watchface")
 
     args = parser.parse_args()
@@ -39,3 +48,22 @@ if __name__ == '__main__':
         watchface = decoder.get()
 
         Saver(watchface).save(output_file)
+
+    if args.decode_wfeditor:
+        input_file = args.decode_wfeditor
+        output_file = args.output
+
+        parser = WFEditorParser(input_file)
+        watchface = parser.watchface
+
+        Saver(watchface).save(output_file)
+
+    if args.encode_wfeditor:
+        input_file = args.encode_wfeditor
+        output_file = args.output
+
+        parser = WFEditorParser(input_file)
+        watchface = parser.watchface
+
+        encoder = WatchFaceEncoder(watchface)
+        encoder.encode(output_file)
