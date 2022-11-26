@@ -9,6 +9,21 @@ class WidgetType:
         self.wformat = Format(wformat)
         self.coordinate_types = COORDINATES_TABLE.get(coordinate_types)
 
+    @classmethod
+    def from_string_attrs(cls, wtype_d, category_d, wformat_d, coordinate_types_d):
+        wtype = None
+        category = None
+
+        if category_d is not None:
+            category = INVERSE_WIDGET_TYPES.get(category_d)
+            if category is not None:
+                wtype = WIDGET_TYPES.get(category).inverse_get(wtype_d)
+
+        wformat = Format[wformat_d]
+        coordinate_types = INVERSE_COORDINATES_TABLE.get(coordinate_types_d)
+
+        return WidgetType(wtype, category, wformat, coordinate_types)
+
     def __str__(self):
         category = self.get_category_string()
         type_string = self.get_type_string()
@@ -48,17 +63,5 @@ class WidgetType:
         wformat_d = dump.get("format")
         coordinate_types_d = dump.get("coordinate_types")
 
-        wtype = None
-        category = None
-
-        if category_d is not None:
-            category = INVERSE_WIDGET_TYPES.get(category_d)
-            if category is not None:
-                wtype = WIDGET_TYPES.get(category).inverse_get(wtype_d)
-
-        wformat = Format[wformat_d]
-        coordinate_types = INVERSE_COORDINATES_TABLE.get(coordinate_types_d)
-
-        return WidgetType(wtype, category, wformat, coordinate_types)
-
+        return cls.from_string_attrs(category_d, wtype_d, wformat_d, coordinate_types_d)
 
