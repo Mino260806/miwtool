@@ -39,6 +39,14 @@ class WFEditorParser:
         background = self.data.get("Background")
         self.add_component(background["Image"])
 
+        metadata = self.data.get("MetaData")
+        if metadata is not None:
+            name = self._get(metadata, "Name", str)
+            face_id = self._get(metadata, "Id", str)
+
+            self.watchface.name = name
+            self.watchface.face_id = face_id
+
         time_data = self.data.get("Time")
         if time_data is not None:
             hours = time_data.get("Hours")
@@ -82,17 +90,33 @@ class WFEditorParser:
 
             self.add_component(battery, t("NORMAL", "BATTERY", "FORMAT_DECIMAL_3_DIGITS", "NSS"))
 
-        self.watchface.preview = Component(Component.PREVIEW)
-        self.watchface.preview.static_image = Image.open(self.folder / "preview.png")
+        weather_data = self.data.get("Weather")
+        if weather_data is not None:
+            weathericon_data = weather_data.get("Icon")
+            if weathericon_data is not None:
+                customicon = weathericon_data.get("CustomIcon")
+                if customicon is not None:
+                    self.ensure(customicon["ImagesCount"] == 19, "Weather images count must exactly equal 19")
+                    self.add_component(customicon, t("TYPE", "WEATHER", "FORMAT_IMAGE", "SS"),
+                                       values_ranges=[0,1,2,3,4,5,6,8,10,13,15,16,17,18,20,33,53,99,301])
+
+        preview_data = self.data.get("Preview")
+        self.add_component(preview_data, is_preview=True)
         self.watchface.preview.resolve()
 
-        self.watchface.name = "Unnamed"
-        self.watchface.face_id = str(randint(1, 65130061))
+        self.watchface.name = "Unnamed" if self.watchface.name is None else self.watchface.name
+        self.watchface.face_id = str(randint(1, 65130061)) if self.watchface.face_id is None else self.watchface.face_id
 
-    def add_component(self, component_data, widget_type=None):
+    def add_component(self, component_data, widget_type=None, is_preview=False, **attrs):
         if component_data is not None:
             component = self.parse_component(component_data, widget_type)
-            self.watchface.components.append(component)
+            for attr, value in attrs.items():
+                component.__setattr__(attr, value)
+            if not is_preview:
+                self.watchface.components.append(component)
+            else:
+                component.comp_type = Component.PREVIEW
+                self.watchface.preview = component
 
     def parse_component(self, component_image, widget_type=None):
         if "Tens" in component_image:
@@ -109,15 +133,15 @@ class WFEditorParser:
             for i in range(images_count):
                 component.images.append(self.load_image(image_index + i))
 
-        alignment = component_image.get("Alignment")
+        alignment = self._get(component_image, "Alignment", str)
         if alignment is not None and alignment != "TopLeft":
             raise RuntimeError("only TopLeft alignment is supported")
-        x = component_image.get("X")
-        if x is None: x = component_image.get("TopLeftX")
-        y = component_image.get("Y")
-        if y is None: y = component_image.get("TopLeftY")
-        component.x = int(x) if x is not None else None
-        component.y = int(y) if y is not None else None
+        x = self._get(component_image, "X", int)
+        if x is None: x = self._get(component_image, "TopLeftX", int)
+        y = self._get(component_image, "Y", int)
+        if y is None: y = self._get(component_image, "TopLeftY", int)
+        component.x = x
+        component.y = y
         component.resolve()
 
         return component
@@ -127,3 +151,13 @@ class WFEditorParser:
             return Image.open(self.folder / self.images_indexes[index])
         elif index in self.default_images_indexes:
             return Image.open(PARENT_FOLDER / "defaultimages" / self.default_images_indexes[index])
+
+    def ensure(self, boolean, message):
+        if not boolean:
+            raise RuntimeError(message)
+        
+    def _get(self, data, key, valuetype):
+        value = data.get(key)
+        if value is not None:
+            self.ensure(isinstance(value, valuetype), f"\"{key}\" must be a {valuetype}")
+        return value
