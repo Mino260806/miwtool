@@ -57,6 +57,7 @@ class ImageEncoder:
 
     @staticmethod
     def encode_from_image(image):
+        image = image.convert(mode="RGBA")
         img_array = np.asarray(image)
         width = img_array.shape[1]
         height = img_array.shape[0]
