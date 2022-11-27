@@ -79,17 +79,20 @@ where `path/to/input` refers to the folder which contains the exported "watchfac
 - Distance
 - Alarm, Bluetooth, Lock, Do not disturb
 - Battery icon, Battery bar
-- Weather OneLine
+- Weather OneLine, Day Weather, Night Weather, Alt Day Weather, Alt Night Weather
 - Air Pollution
 </details>
 
 <details>
-    <summary>Notes</summary>
+    <summary>[Notes]</summary>
 
 - Only "Tens" image matters in Time, ("Ones" is ignored) 
-- Day Weather, Night Weather will be all interpreted the same
 - Editing `config.json` (see "Details about unpacked file") gives you a more 
 complete control over features (exclusive: analog, ...)
+- Weather CustomIcon must be in this exact order: 
+Sunny, Cloudy, Overcast, Showers, Thunder Storm, Snowy, Sleet, Moderate Rain, Heavy Rain,
+Weak Snow, Moderate Snow, Heavy Snow, Very Heavy Snow, Foggy, Windy, Weak Snow,
+Loop (?), Unknown Data, Showers
 
 </details>
 
