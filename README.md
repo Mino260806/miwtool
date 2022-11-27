@@ -12,14 +12,86 @@ python -m pip install -r requirements.txt
 
 ## Usage
 - Unpacking
-```
-main.py --decode /path/to/input --output /path/to/output
+```commandline
+python main.py --decode /path/to/input --output /path/to/output
 ```
 
 - Repacking
+```commandline
+python main.py --encode /path/to/input --output /path/to/output
 ```
-main.py --encode /path/to/input --output /path/to/output
+
+## Creating Watch Faces the easy way
+
+[Watchface Editor](https://v1ack.github.io/watchfaceEditor/) now includes support for Redmi Watch 2 Lite! 
+
+
+<details>
+    <summary>How to use</summary>
+
+- In the top right corner, press "Devices" and select "Redmi Watch 2 Lite"
+- Go to "View" Tab, press "SELECT" button in front of Images and select all
+of your custom images (they must be named in order "0.png", "1.png", "2.png"...)
+- In "Edit" Tab, you can change watch "Name" under "MetaData", and add a custom "Id" (optional)
+- Toggle the components you want to add in the right
+- In "Design" Tab, position your components freely
+- After finishing, click "EXPORT JSON" and save the file as "watchface.json" 
+in the same folder then the images you imported earlier
+
+
+### Compiling to ready-to-install file
+```commandline
+python main.py --encode_wfeditor /path/to/input --output /path/to/output
 ```
+
+### Compiling to unpacked file
+```commandline
+python main.py --decode_wfeditor /path/to/input --output /path/to/output
+```
+
+where `path/to/input` refers to the folder which contains the exported "watchface.json" and the images
+
+</details>
+
+<details>
+    <summary>Folder structure</summary>
+
+```
+├── 0000.png
+├── 0001.png
+├── 0002.png
+├── 0003.png
+├── 0004.png
+├── 0005.png
+├── 0006.png
+├── 0007.png
+...
+└── watchface.json
+```
+</details>
+
+<details>
+    <summary>Unsupported features</summary>
+
+- 12/24H format change
+- Date OneLine
+- Steps Goal, Steps Progress, Steps Progress Circle, Steps Goal Icon
+- Distance
+- Alarm, Bluetooth, Lock, Do not disturb
+- Battery icon, Battery bar
+- Weather OneLine
+- Air Pollution
+</details>
+
+<details>
+    <summary>Notes</summary>
+
+- Only "Tens" image matters in Time, ("Ones" is ignored) 
+- Day Weather, Night Weather will be all interpreted the same
+- Editing `config.json` (see "Details about unpacked file") gives you a more 
+complete control over features (exclusive: analog, ...)
+
+</details>
 
 ##  Watch Faces extraction
 To extract watch faces, you need to install Mi Fitness on an android 
