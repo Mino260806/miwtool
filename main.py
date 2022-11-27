@@ -2,12 +2,10 @@ from decoder.watch_face_decoder import WatchFaceDecoder
 from encoder.watch_face_encoder import WatchFaceEncoder
 from memory.loader import Loader
 from memory.saver import Saver
-
+from wfeditor.parser import WFEditorParser
 
 from argparse import ArgumentParser
 import os
-
-from wfeditor.parser import WFEditorParser
 
 
 def execute_tests():
