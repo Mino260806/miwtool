@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 from random import randint
-
 from PIL import Image
 
 from component import Component
@@ -102,7 +101,6 @@ class WFEditorParser:
 
         preview_data = self.data.get("Preview")
         self.add_component(preview_data, is_preview=True)
-        self.watchface.preview.resolve()
 
         self.watchface.name = "Unnamed" if self.watchface.name is None else self.watchface.name
         self.watchface.face_id = str(randint(1, 65130061)) if self.watchface.face_id is None else self.watchface.face_id
