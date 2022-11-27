@@ -20,6 +20,7 @@ def index_images(folder):
 
 class WFEditorParser:
     default_images_indexes = index_images(PARENT_FOLDER / "defaultimages")
+    misc_images_indexes = {}
 
     def __init__(self, src):
         self.images_indexes = index_images(src)
@@ -35,8 +36,12 @@ class WFEditorParser:
         t = WidgetType.from_string_attrs
 
         self.watchface = WatchFace()
+        preview_data = self.data.get("Preview")
+        self.add_component(preview_data, is_preview=True)
+
         background = self.data.get("Background")
-        self.add_component(background["Image"])
+        if background is not None:
+            self.add_component(background["Image"])
 
         metadata = self.data.get("MetaData")
         if metadata is not None:
@@ -45,6 +50,9 @@ class WFEditorParser:
 
             self.watchface.name = name
             self.watchface.face_id = face_id
+
+        self.watchface.name = "Unnamed" if self.watchface.name is None else self.watchface.name
+        self.watchface.face_id = str(randint(1, 65130061)) if self.watchface.face_id is None else self.watchface.face_id
 
         time_data = self.data.get("Time")
         if time_data is not None:
@@ -99,11 +107,27 @@ class WFEditorParser:
                     self.add_component(customicon, t("TYPE", "WEATHER", "FORMAT_IMAGE", "SS"),
                                        values_ranges=[0,1,2,3,4,5,6,8,10,13,15,16,17,18,20,33,53,99,301])
 
-        preview_data = self.data.get("Preview")
-        self.add_component(preview_data, is_preview=True)
+                coordinates = weathericon_data.get("Coordinates")
+                if coordinates is not None:
+                    self.index_misc()
+                    coordinates["ImageIndex"] = 100000
+                    coordinates["ImagesCount"] = 19
+                    self.add_component(coordinates, t("TYPE", "WEATHER", "FORMAT_IMAGE", "SS"),
+                                       values_ranges=[0, 1, 2, 3, 4, 5, 6, 8, 10, 13, 15, 16, 17, 18, 20, 33, 53, 99, 301])
 
-        self.watchface.name = "Unnamed" if self.watchface.name is None else self.watchface.name
-        self.watchface.face_id = str(randint(1, 65130061)) if self.watchface.face_id is None else self.watchface.face_id
+            temperature_data = weather_data.get("Temperature")
+            if temperature_data is not None:
+                current_temperature_data = temperature_data.get("Current")
+                if current_temperature_data is not None:
+                    number = current_temperature_data.get("Number")
+                    component = self.add_component(number, t("TEMPERATURE", "WEATHER", "FORMAT_DECIMAL_2_DIGITS", "NSS"))
+
+                    minusSignImageIndex = current_temperature_data.get("MinusSignImageIndex")
+                    degreesImageIndex = current_temperature_data.get("DegreesImageIndex")
+
+                    component.images.append(self.load_image(minusSignImageIndex))
+                    component.static_image = self.load_image(degreesImageIndex)
+                    component.resolve()
 
     def add_component(self, component_data, widget_type=None, is_preview=False, **attrs):
         if component_data is not None:
@@ -115,6 +139,7 @@ class WFEditorParser:
             else:
                 component.comp_type = Component.PREVIEW
                 self.watchface.preview = component
+            return component
 
     def parse_component(self, component_image, widget_type=None):
         if "Tens" in component_image:
@@ -149,6 +174,8 @@ class WFEditorParser:
             return Image.open(self.folder / self.images_indexes[index])
         elif index in self.default_images_indexes:
             return Image.open(PARENT_FOLDER / "defaultimages" / self.default_images_indexes[index])
+        elif index in self.misc_images_indexes:
+            return Image.open(PARENT_FOLDER / "../assets" / self.misc_images_indexes[index])
 
     def ensure(self, boolean, message):
         if not boolean:
@@ -159,3 +186,8 @@ class WFEditorParser:
         if value is not None:
             self.ensure(isinstance(value, valuetype), f"\"{key}\" must be a {valuetype}")
         return value
+
+    def index_misc(self):
+        if not self.misc_images_indexes:
+            index = index_images(PARENT_FOLDER / "../assets")
+            self.misc_images_indexes.update(index)
