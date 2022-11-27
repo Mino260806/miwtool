@@ -11,8 +11,11 @@ from wfeditor.parser import WFEditorParser
 
 
 def execute_tests():
-    global parser
-    parser = WFEditorParser("/home/amin/Documents/WatchFace/wfceditor/raw/test")
+    try:
+        from tests import test
+        test()
+    except ModuleNotFoundError:
+        print("No tests")
 
 
 if "TEST" in os.environ:
