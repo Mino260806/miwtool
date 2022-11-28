@@ -148,7 +148,7 @@ class ComponentEncoder(Encoder):
         return self.pop_buffer()
 
     def encode_image(self, image):
-        image_bytes, mask_bytes = ImageEncoder.encode_from_image(image)
+        image_bytes, mask_bytes = ImageEncoder.encode_from_image(image, self.component.spacing)
         # transparency_mask = bytearray([0xff] * image.size[0] * image.size[1])
         self.write(image_bytes)
         self.write(mask_bytes)

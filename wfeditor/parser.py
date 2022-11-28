@@ -165,6 +165,8 @@ class WFEditorParser:
         if y is None: y = self._get(component_image, "TopLeftY", int)
         component.x = x
         component.y = y
+        spacing = self._get(component_image, "Spacing", int) or 0
+        component.spacing = spacing
         component.resolve()
 
         return component

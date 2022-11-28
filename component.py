@@ -25,6 +25,7 @@ class Component:
         self.values_ranges = []
         self.frames_count = None
         self.widget_type = None
+        self.spacing = 0
 
         # Only in rotating widgets (ex clock)
         self.max_degrees = None
@@ -73,6 +74,8 @@ class Component:
 
         if self.values_ranges:
             dump["values_ranges"] = self.values_ranges
+        if self.spacing != 0:
+            dump["spacing"] = self.spacing
 
         if paths_list:
             dump["dynamic"] = paths_list
@@ -88,6 +91,7 @@ class Component:
         self.pivot_x = dump.get("pivot_x")
         self.pivot_y = dump.get("pivot_y")
         self.values_ranges = dump.get("values_ranges") or []
+        self.spacing = dump.get("spacing") or 0
 
         widget_type_dump = dump.get("type")
         if widget_type_dump:
@@ -96,28 +100,21 @@ class Component:
         static_path = dump.get("static")
         if static_path:
             self.static_image = Image.open(path / static_path).convert("RGBA")
-            self.swidth = self.static_image.size[0]
-            self.sheight = self.static_image.size[1]
 
         dynamic_paths = dump.get("dynamic")
         if dynamic_paths:
-            self.frames_count = len(dynamic_paths)
             for dynamic_path in dynamic_paths:
                 image = Image.open(path / dynamic_path).convert("RGBA")
                 self.images.append(image)
-                if self.width is None:
-                    self.width = image.size[0]
-                if self.height is None:
-                    self.height = image.size[1]
-        else:
-            self.frames_count = 0
+
+        self.resolve()
 
     def resolve(self):
         if self.frames_count is None:
             self.frames_count = len(self.images) if self.images else 0
         if self.images and (self.width is None or self.height is None):
-            self.width = self.images[0].size[0]
+            self.width = self.images[0].size[0] + self.spacing
             self.height = self.images[0].size[1]
         if self.static_image and (self.swidth is None or self.sheight is None):
-            self.swidth = self.static_image.size[0]
+            self.swidth = self.static_image.size[0] + self.spacing
             self.sheight = self.static_image.size[1]

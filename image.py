@@ -53,10 +53,10 @@ class ImageDecoder:
 class ImageEncoder:
     @staticmethod
     def encode_from_path(path):
-        return ImageEncoder.encode_from_image(Image.open(path))
+        return ImageEncoder.encode_from_image(Image.open(path), self.component.spacing)
 
     @staticmethod
-    def encode_from_image(image):
+    def encode_from_image(image, spacing=0):
         image = image.convert(mode="RGBA")
         img_array = np.asarray(image)
         width = img_array.shape[1]
@@ -70,4 +70,12 @@ class ImageEncoder:
                 doublebyte_color = color.toRGB565().value
                 new_img_array[y, x] = doublebyte_color
                 mask_array[y, x] = pixel[3]
+        if spacing > 0:
+            new_img_array = np.hstack((new_img_array, np.zeros((height, spacing)))).astype(">i2")
+            mask_array = np.hstack((mask_array, np.zeros((height, spacing), dtype=np.byte)))
+        elif spacing < 0:
+            assert width > -spacing
+            new_img_array = new_img_array[:, :width+spacing].copy(order="C")
+            mask_array = mask_array[:, :width+spacing].copy(order="C")
+
         return new_img_array, mask_array
