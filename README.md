@@ -170,6 +170,8 @@ or `com.xiaomi.wearable` depending on your region)
 | max_value           | if R            | max_value that defines a rotation                | int16         |
 | max_degrees         | if R            | degrees corresponding to max_value (3600° is 2π) | int16         |
 | values_ranges       | if FORMAT_IMAGE | value range for each image                       | array[uint32] |
+| spacing             | optional        | spacing in pixels at the end of each image       | int           |
+
 </details>
 
 <details>
