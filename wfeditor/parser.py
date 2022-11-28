@@ -155,6 +155,8 @@ class WFEditorParser:
             component.images = []
             for i in range(images_count):
                 component.images.append(self.load_image(image_index + i))
+        if widget_type is not None and widget_type.wtype == "DAY_OF_WEEK":
+            component.images = component_image[-1:] + component_image[:-1]
 
         alignment = self._get(component_image, "Alignment", str)
         if alignment is not None and alignment != "TopLeft":
