@@ -196,8 +196,7 @@ https://github.com/Mino260806/mi-watchface-uploader
 </details>
   
 <details>
-  <summary>Custom watchface created from scratch and uploaded to the watch 
-(excuse my poor design lol) </summary>
+  <summary>Watchface created from scratch and uploaded to the watch  </summary>
 
 ![encoder](examples/encoder_1.jpg)
 
@@ -205,9 +204,18 @@ https://github.com/Mino260806/mi-watchface-uploader
 
 
 <details>
-  <summary>Custom watchface ported from another watch </summary>
+  <summary>"Minecraft 1.0" watchface ported from GTS 2 mini </summary>
 
 ![encoder](examples/encoder_2.jpg)
 Source: https://amazfitwatchfaces.com/gts/view/9999
 
 </details>
+
+<details>
+  <summary>"Dynamic" watchface ported from GTS 3 / GTS 4 </summary>
+
+![encoder](examples/encoder_3.jpg)
+Source: https://amazfitwatchfaces.com/gts/view/9953
+
+</details>
+
