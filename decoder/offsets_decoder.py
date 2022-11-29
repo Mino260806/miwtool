@@ -64,47 +64,6 @@ class ComponentOffsetDecoder(Decoder):
             self.component_offsets.append(ComponentOffset())
             self.process_offset(i, 0x0, start_offset, start_offset_size)
 
-            # component_offset = ComponentOffset()
-            #
-            # next_offset = self.raw_offsets[0][i][0]
-            # next_offset_size = self.raw_offsets[0][i][1]
-            # next_offset_type = 0
-            #
-            # # print(hex(i), hex(next_offset_type), ":", hex(next_offset), hex(next_offset_size))
-            # component_offset.add_offset(next_offset, next_offset_size, next_offset_type)
-            #
-            # done = False
-            # while not done:
-            #     doffsets = ()
-            #     if next_offset_type in useful_info_offset:
-            #         doffsets = useful_info_offset[next_offset_type]
-            #         if next_offset_type == 0x7:
-            #             if next_offset_size == 0x14:
-            #                 doffsets = (0x8, 0x10)
-            #             else:
-            #                 doffsets = (0x8, )
-            #         if doffsets == ():
-            #             break
-            #
-            #     no = next_offset
-            #     for doffset in doffsets:
-            #         if doffset + 0x4 > next_offset_size:
-            #             continue
-            #
-            #         self.seek(no + doffset)
-            #         component_index = self.read_ile(1)
-            #         self.read_ile(2)
-            #         next_offset_type = self.read_ile(1)
-            #
-            #         if next_offset_type == 0:
-            #             done = True
-            #             break
-            #         next_offset = self.raw_offsets[next_offset_type][component_index][0]
-            #         next_offset_size = self.raw_offsets[next_offset_type][component_index][1]
-            #
-            #         # print(hex(i), hex(next_offset_type), ":", hex(next_offset), hex(next_offset_size))
-            #         component_offset.add_offset(next_offset, next_offset_size, next_offset_type)
-
     def process_offset(self, component_index, source_offset_type, source_offset, source_offset_size):
         print(component_index, source_offset_type, hex(source_offset), hex(source_offset_size))
         self.component_offsets[component_index].add_offset(source_offset, source_offset_size, source_offset_type)
