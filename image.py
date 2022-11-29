@@ -13,7 +13,7 @@ class ImageDecoder:
         else:
             shape = (height, width)
 
-        nbytes = 2 if dtype == ">i2" else 1
+        nbytes = 2 if dtype.endswith("i2") else 1
         img_bytes = np.frombuffer(stream.read(width * height * nbytes), dtype=dtype)
         img_bytes = np.reshape(img_bytes, (height, width))
         img_rgb = np.full(shape, fill_value=0xff, dtype=np.uint8)

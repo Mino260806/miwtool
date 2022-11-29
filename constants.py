@@ -67,6 +67,7 @@ COMPONENT_DETAILS_OFFSETS = {
 }
 
 IMAGE_COMPONENT_OFFSETS = {
+    "color_profile": OffsetInfo(0x0, size=0x1),
     "frames_count": OffsetInfo(0x1, size=0x1),
     "width": OffsetInfo(0x4, size=0x2),
     "height": OffsetInfo(0x6, size=0x2),
@@ -92,6 +93,12 @@ WIDGET_CONFIGURATION_OFFSETS = {
     # max_value -> max_degrees
 
     "values_ranges_start": OffsetInfo(0x10, size=-1)
+}
+
+
+COLOR_PROFILES = {
+    0x4: "<i2",
+    0x7: ">i2"
 }
 
 

@@ -1,7 +1,8 @@
 import numpy as np
 from PIL import Image
 
-from constants import COMPONENT_DETAILS_OFFSETS, IMAGE_COMPONENT_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, Format
+from constants import COMPONENT_DETAILS_OFFSETS, IMAGE_COMPONENT_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, Format, \
+    COLOR_PROFILES
 from decoder.base_decoder import Decoder
 from component import Component
 from image import ImageDecoder
@@ -68,6 +69,7 @@ class ComponentDecoder(Decoder):
     def parse_image(self, static=True):
         component = self.component
 
+        color_profile = IMAGE_COMPONENT_OFFSETS["color_profile"].extract(self)
         component.frames_count = IMAGE_COMPONENT_OFFSETS["frames_count"].extract(self)
         if not static:
             component.width = IMAGE_COMPONENT_OFFSETS["width"].extract(self)
@@ -80,25 +82,26 @@ class ComponentDecoder(Decoder):
         offset = IMAGE_COMPONENT_OFFSETS["pixel_array"].value
 
         if static:
-            image = self.extract_image(offset, component.swidth, component.sheight)
+            image = self.extract_image(offset, component.swidth, component.sheight, color_profile)
             component.static_image = image
 
         else:
             for i in range(component.frames_count):
-                image = self.extract_image(offset, component.width, component.height)
+                image = self.extract_image(offset, component.width, component.height, color_profile)
                 component.images.append(image)
                 offset += int((component.height * 3 / 2) * component.width * 2)
 
-    def extract_image(self, offset,  w, h):
+    def extract_image(self, offset,  w, h, color_profile):
         self.seek(offset)
-        base_image = ImageDecoder().decode(self.f, w, h)
+        dtype = COLOR_PROFILES[color_profile]
+        base_image = ImageDecoder().decode(self.f, w, h, dtype)
         # component.images.append(base_image)
         # offset += int((component.height * 3 / 2) * component.width * 2)
 
         # component.images.append(ImageDecoder().decode(self.f, w, component.height))
         offset += h * w * 2
         self.seek(offset)
-        mask = ImageDecoder("L").decode(self.f, w, h, dtype=np.byte)
+        mask = ImageDecoder("L").decode(self.f, w, h, dtype="u1")
         # masks = np.asarray(masks_raw)
         # mask1_raw = Image.fromarray(masks[:, :floor(w / 2)])
         # mask2_raw = Image.fromarray(masks[:floor(h / 2), ceil(w / 2):])
