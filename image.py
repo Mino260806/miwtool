@@ -53,7 +53,7 @@ class ImageDecoder:
 class ImageEncoder:
     @staticmethod
     def encode_from_path(path):
-        return ImageEncoder.encode_from_image(Image.open(path), self.component.spacing)
+        return ImageEncoder.encode_from_image(Image.open(path))
 
     @staticmethod
     def encode_from_image(image, spacing=0):
