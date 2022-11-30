@@ -3,11 +3,13 @@ from constants import WIDGET_TYPES, INVERSE_WIDGET_TYPES, Format, COORDINATES_TA
 
 
 class WidgetType:
-    def __init__(self, wtype, category, wformat, coordinate_types):
+    def __init__(self, wtype, category, wformat, ctypes):
         self.wtype = wtype
         self.category = category
         self.wformat = Format(wformat)
-        self.coordinate_types = COORDINATES_TABLE.get(coordinate_types)
+        self.coordinate_types = COORDINATES_TABLE.get(ctypes)
+        if self.coordinate_types is None:
+            raise RuntimeError(f"Unknown coordinates type: {hex(ctypes)}")
 
     @classmethod
     def from_string_attrs(cls, wtype_d, category_d, wformat_d, coordinate_types_d):

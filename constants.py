@@ -165,13 +165,14 @@ for value, category in list(WIDGET_TYPES.items()):
 
 
 class CoordinateRelative:
-    def __init__(self, cid, relx, rely, is_number=True, is_clock=False, zero_padding=False):
+    def __init__(self, cid, relx, rely, is_number=True, is_clock=False, zero_padding=False, is_masked=False):
         self.cid = cid
         self.relx = relx
         self.rely = rely
         self.zero_padding = zero_padding
         self.is_number = is_number
         self.is_clock = is_clock
+        self.is_masked = is_clock
 
     def __eq__(self, other):
         if isinstance(other, str):
@@ -181,12 +182,14 @@ class CoordinateRelative:
                    self.rely == other.rely and \
                    self.zero_padding == other.zero_padding and \
                    self.is_number == other.is_number and \
-                   self.is_clock == other.is_clock
+                   self.is_clock == other.is_clock and \
+                   self.is_masked == other.is_masked
         return super().__eq__(other)
 
     def __str__(self):
         return f"CoordinateRelative({self.relx.name}, {self.rely.name}, " \
-               f"zero_padding={self.zero_padding}, is_number={self.is_number}, is_clock={self.is_clock})"
+               f"zero_padding={self.zero_padding}, is_number={self.is_number}, " \
+               f"is_clock={self.is_clock}, is_masked={self.is_masked})"
 
     def __hash__(self):
         return hash(self.cid)
@@ -217,6 +220,7 @@ COORDINATES_TABLE = {
     0x20: CoordinateRelative("SS", CoordType.START, CoordType.START, is_number=False),
 
     0x30: CoordinateRelative("RSS", CoordType.START, CoordType.START, is_number=True, is_clock=True),
+    0x40: CoordinateRelative("RMSS", CoordType.START, CoordType.START, is_number=True, is_clock=True),
 }
 
 INVERSE_COORDINATES_TABLE = {}
