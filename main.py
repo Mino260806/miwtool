@@ -1,3 +1,4 @@
+from config import Config
 from decoder.watch_face_decoder import WatchFaceDecoder
 from encoder.watch_face_encoder import WatchFaceEncoder
 from memory.loader import Loader
@@ -32,7 +33,11 @@ elif __name__ == '__main__':
     group.add_argument("-ew", "--encode_wfeditor", type=str)
     parser.add_argument("-o", "--output", type=str, default="watchface")
 
+    parser.add_argument("-ce", "--colorendianness", type=str, choices=["little", "big"], default="big")
+
     args = parser.parse_args()
+    config = Config(args.colorendianness)
+    config.propagate()
     if args.encode:
         input_file = args.encode
         output_file = args.output

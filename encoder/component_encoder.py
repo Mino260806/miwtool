@@ -1,10 +1,13 @@
-from constants import COMPONENT_DETAILS_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, IMAGE_COMPONENT_OFFSETS, Format
+from constants import COMPONENT_DETAILS_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, IMAGE_COMPONENT_OFFSETS, Format, \
+    COLOR_PROFILES
 from encoder.base_encoder import Encoder
 from image import ImageEncoder
 from widget_type import WidgetType
 
 
 class ComponentEncoder(Encoder):
+    color_endianness = "big"
+
     def __init__(self, component, is_preview=False):
         super().__init__()
 
@@ -110,9 +113,7 @@ class ComponentEncoder(Encoder):
 
         property_index = self.bump_property()
 
-        self.seek(0)
-        self.write(b"\x07")
-
+        IMAGE_COMPONENT_OFFSETS["color_profile"].encode(self, self.get_color_profile())
         IMAGE_COMPONENT_OFFSETS["width"].encode(self, self.component.width)
         IMAGE_COMPONENT_OFFSETS["height"].encode(self, self.component.height)
         IMAGE_COMPONENT_OFFSETS["frames_count"].encode(self, self.component.frames_count)
@@ -132,9 +133,7 @@ class ComponentEncoder(Encoder):
 
         property_index = self.bump_property()
 
-        self.seek(0)
-        self.write(b"\x07")
-
+        IMAGE_COMPONENT_OFFSETS["color_profile"].encode(self, self.get_color_profile())
         IMAGE_COMPONENT_OFFSETS["width"].encode(self, self.component.swidth)
         IMAGE_COMPONENT_OFFSETS["height"].encode(self, self.component.sheight)
         IMAGE_COMPONENT_OFFSETS["mystery_number"].encode(self, self.component.swidth * self.component.sheight *
@@ -159,3 +158,10 @@ class ComponentEncoder(Encoder):
         property_index = self.properties_counter[self._next_property_type]
         self.properties_counter[self._next_property_type] += 1
         return property_index
+
+    @classmethod
+    def get_color_profile(cls):
+        return {
+            "little": 0x4,
+            "big": 0x7
+        }[cls.color_endianness]
