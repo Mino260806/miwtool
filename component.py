@@ -33,6 +33,15 @@ class Component:
         self.pivot_x = None
         self.max_value = None
 
+        # Only is masked rotating widgets (RMSS)
+        self.masked_image = None
+        self.mask_new_value = None
+        self.mask_pivot_x = None
+        self.mask_pivot_y = None
+        self.mask_max_degrees = None
+        self.mask_unk_1 = None
+        self.mask_unk_2 = None
+
     def show(self):
         images = []
         if self.images:
@@ -63,14 +72,20 @@ class Component:
         if self.widget_type is not None:
             dump["type"] = self.widget_type.dump()
 
-        if self.max_degrees:
+        if self.max_degrees is not None:
             dump["max_degrees"] = self.max_degrees
-        if self.max_value:
             dump["max_value"] = self.max_value
-        if self.pivot_x:
             dump["pivot_x"] = self.pivot_x
-        if self.pivot_y:
             dump["pivot_y"] = self.pivot_y
+
+        if self.masked_image is not None:
+            dump["masked_image"] = self.masked_image
+            dump["mask_new_value"] = self.mask_new_value
+            dump["mask_pivot_x"] = self.mask_pivot_x
+            dump["mask_pivot_y"] = self.mask_pivot_y
+            dump["mask_max_degrees"] = self.mask_max_degrees
+            dump["mask_unk_1"] = self.mask_unk_1
+            dump["mask_unk_2"] = self.mask_unk_2
 
         if self.values_ranges:
             dump["values_ranges"] = self.values_ranges
@@ -86,10 +101,20 @@ class Component:
     def load_from_dump(self, path, dump):
         self.x = dump.get("x")
         self.y = dump.get("y")
+
         self.max_degrees = dump.get("max_degrees")
         self.max_value = dump.get("max_value")
         self.pivot_x = dump.get("pivot_x")
         self.pivot_y = dump.get("pivot_y")
+
+        self.masked_image = dump.get("masked_image")
+        self.mask_new_value = dump.get("mask_new_value")
+        self.mask_pivot_x = dump.get("mask_pivot_x")
+        self.mask_pivot_y = dump.get("mask_pivot_y")
+        self.mask_max_degrees = dump.get("mask_max_degrees")
+        self.mask_unk_1 = dump.get("mask_unk_1")
+        self.mask_unk_2 = dump.get("mask_unk_2")
+
         self.values_ranges = dump.get("values_ranges") or []
         self.spacing = dump.get("spacing") or 0
 

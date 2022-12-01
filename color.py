@@ -12,18 +12,30 @@ class Color:
 
         self.type = type
 
-    @property
-    def value(self):
+    def value(self, endianness="big"):
         if self.type == self.RGB888:
-            return (self.r << 16) + (self.g << 8) + self.b
+            value = (self.r << 16) + (self.g << 8) + self.b
 
         elif self.type == self.RGB565:
-            return (self.r << 11) + (self.g << 5) + self.b
+            value = (self.r << 11) + (self.g << 5) + self.b
 
-        return 0
+        else:
+            return 0
+
+        if endianness == "little" and self.type == self.RGB565:
+            return self.inversed(value)
+        else:
+            return value
+
+    @staticmethod
+    def inversed(value):
+        b = bytearray(int(value).to_bytes(2, "big"))
+        return int.from_bytes(b, "little")
 
     @classmethod
-    def fromRGB565(cls, value):
+    def fromRGB565(cls, value, endianness="big"):
+        if endianness == "little":
+            value = cls.inversed(value)
         r = (value & 0xf800) >> (5 + 6)
         g = (value & 0x7e0) >> 5
         b = value & 0x1f
@@ -62,4 +74,4 @@ class Color:
         image.show()
 
     def __str__(self):
-        return hex(self.value)
+        return hex(self.value())

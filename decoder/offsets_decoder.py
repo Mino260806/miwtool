@@ -85,7 +85,7 @@ class ComponentOffsetDecoder(Decoder):
             0x0: (0x0,),
             0x2: (),
             0x3: (),
-            0x7: (0x8, 0x10)
+            0x7: None
         }
 
         if offset_type in useful_info_offset:
@@ -93,6 +93,8 @@ class ComponentOffsetDecoder(Decoder):
             if offset_type == 0x7:
                 if offset_size == 0x14:
                     doffsets = (0x8, 0x10)
+                elif offset_size == 0x28: # masked rotation
+                    doffsets = (0x8, 0xc)
                 else:
                     doffsets = (0x8,)
             return doffsets

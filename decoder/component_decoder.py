@@ -2,7 +2,7 @@ import numpy as np
 from PIL import Image
 
 from constants import COMPONENT_DETAILS_OFFSETS, IMAGE_COMPONENT_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, Format, \
-    COLOR_PROFILES
+    COLOR_PROFILES, INVERSE_COORDINATES_TABLE
 from decoder.base_decoder import Decoder
 from component import Component
 from image import ImageDecoder
@@ -49,12 +49,25 @@ class ComponentDecoder(Decoder):
             category = WIDGET_CONFIGURATION_OFFSETS["category"].extract(self)
             wformat = WIDGET_CONFIGURATION_OFFSETS["widget_format"].extract(self)
             coordinate_types = WIDGET_CONFIGURATION_OFFSETS["coordinate_types"].extract(self)
-            if coordinate_types == 0x30: # clock
+
+            if coordinate_types == INVERSE_COORDINATES_TABLE["RSS"]: # clock
                 assert self.offsets_info[0x7].size >= 0x20
                 component.max_value = WIDGET_CONFIGURATION_OFFSETS["max_value"].extract(self)
                 component.pivot_x = WIDGET_CONFIGURATION_OFFSETS["pivot_x"].extract(self)
                 component.pivot_y = WIDGET_CONFIGURATION_OFFSETS["pivot_y"].extract(self)
                 component.max_degrees = WIDGET_CONFIGURATION_OFFSETS["max_degrees"].extract(self)
+
+            if coordinate_types == INVERSE_COORDINATES_TABLE["RMSS"]: # rotational masked
+                # TODO support for multiple static images
+                raise RuntimeError("Unsupported coordinates type: RMSS")
+                component.masked_image = WIDGET_CONFIGURATION_OFFSETS[""]
+                component.mask_new_value = WIDGET_CONFIGURATION_OFFSETS["mask_new_value"]
+                component.mask_pivot_x = WIDGET_CONFIGURATION_OFFSETS["mask_pivot_x"]
+                component.mask_pivot_y = WIDGET_CONFIGURATION_OFFSETS["mask_pivot_y"]
+                component.mask_max_degrees = WIDGET_CONFIGURATION_OFFSETS["mask_max_degrees"]
+                component.mask_unk_1 = WIDGET_CONFIGURATION_OFFSETS["mask_unk_1"]
+                component.mask_unk_2 = WIDGET_CONFIGURATION_OFFSETS["mask_unk_2"]
+
             has_values_ranges = WIDGET_CONFIGURATION_OFFSETS["has_values_ranges"].extract(self)
             if has_values_ranges == 0x2:
                 assert wformat == Format.FORMAT_IMAGE.value
@@ -93,53 +106,13 @@ class ComponentDecoder(Decoder):
 
     def extract_image(self, offset,  w, h, color_profile):
         self.seek(offset)
-        dtype = COLOR_PROFILES[color_profile]
-        base_image = ImageDecoder().decode(self.f, w, h, dtype)
-        # component.images.append(base_image)
-        # offset += int((component.height * 3 / 2) * component.width * 2)
-
-        # component.images.append(ImageDecoder().decode(self.f, w, component.height))
+        endianness = COLOR_PROFILES[color_profile]
+        base_image = ImageDecoder(endianness=endianness).decode(self.f, w, h)
         offset += h * w * 2
         self.seek(offset)
-        mask = ImageDecoder("L").decode(self.f, w, h, dtype="u1")
-        # masks = np.asarray(masks_raw)
-        # mask1_raw = Image.fromarray(masks[:, :floor(w / 2)])
-        # mask2_raw = Image.fromarray(masks[:floor(h / 2), ceil(w / 2):])
-        # mask1 = mask1_raw \
-        #     .resize((w, h), Image.NORMAL) \
-        #     .convert("L")
-        # mask2 = mask2_raw \
-        #     .resize((w, h), Image.NORMAL) \
-        #     .convert("L")
-        # # mask1.show()
-        # # exit()
-        # mask1_raw_new = np.asarray(mask1)
-        # mask2_raw_new = np.asarray(mask2)
-        # masks_combined_raw = mask1_raw_new // 2 + mask2_raw_new // 2
-        # masks_combined = Image.fromarray(masks_combined_raw)
-        # masks_combined = Image.new(mode="L", size=(w, component.height))
-        # masks_combined.paste(mask1, mask=mask_mask)
-        # masks_combined.paste(mask2, mask=mask_mask)
-        # exit()
+        mask = ImageDecoder(mode="L", dtype="u1").decode(self.f, w, h)
 
-        # mask1.resize((w * 8, component.height * 8)).show()
-        # mask2.resize((w * 8, component.height * 8)).show()
-        # masks_combined.resize((w * 8, component.height * 8)).show()
-        # print(masks_combined.getpixel((5,5)))
-        # exit()
-
-        background = Image.new("RGBA", (w, h), color=(0, 0, 0, 0))
-        image = Image.composite(base_image, background, mask)
-
-        # if self.unknowns[0] == 1:
-        #     pass
-        #     # image.show()
-        #     # base_image.save("base.png")
-        #     # masks_raw.save("masks.png")
-        #     # masks_raw.convert("L").save("masks_gray.png")
-        #     # mask1_raw.save("mask1.png")
-        #     # image.save("result.png")
-        #     # exit()
+        image = ImageDecoder().merge(base_image, mask)
         return image
 
     def get(self):

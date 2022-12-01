@@ -136,8 +136,7 @@ class ComponentEncoder(Encoder):
         IMAGE_COMPONENT_OFFSETS["color_profile"].encode(self, self.get_color_profile())
         IMAGE_COMPONENT_OFFSETS["width"].encode(self, self.component.swidth)
         IMAGE_COMPONENT_OFFSETS["height"].encode(self, self.component.sheight)
-        IMAGE_COMPONENT_OFFSETS["mystery_number"].encode(self, self.component.swidth * self.component.sheight *
-                                                         max(1, self.component.frames_count) * 3)
+        IMAGE_COMPONENT_OFFSETS["mystery_number"].encode(self, self.component.swidth * self.component.sheight * 3)
         IMAGE_COMPONENT_OFFSETS["pixel_array"].goto(self)
         self.encode_image(self.component.static_image)
         # print(hex(self.f.getbuffer().nbytes))
@@ -148,7 +147,6 @@ class ComponentEncoder(Encoder):
 
     def encode_image(self, image):
         image_bytes, mask_bytes = ImageEncoder.encode_from_image(image, self.component.spacing)
-        # transparency_mask = bytearray([0xff] * image.size[0] * image.size[1])
         self.write(image_bytes)
         self.write(mask_bytes)
 

@@ -92,13 +92,22 @@ WIDGET_CONFIGURATION_OFFSETS = {
     "max_degrees": OffsetInfo(0x1a, size=0x2), # 2pi -> 3600°
     # max_value -> max_degrees
 
-    "values_ranges_start": OffsetInfo(0x10, size=-1)
+    "values_ranges_start": OffsetInfo(0x10, size=-1),
+
+    "masked_image_property_index": OffsetInfo(0xc, size=0x1),
+    "masked_image_property_type": OffsetInfo(0xf, size=0x1),
+    "mask_max_value": OffsetInfo(0x19, size=0x2),
+    "mask_pivot_x": OffsetInfo(0x1c, size=0x2),
+    "mask_pivot_y": OffsetInfo(0x1e, size=0x2),
+    "mask_max_degrees": OffsetInfo(0x22, size=0x2),
+    "mask_unk_1": OffsetInfo(0x24, size=0x2),
+    "mask_unk_2": OffsetInfo(0x26, size=0x2),
 }
 
 
 COLOR_PROFILES = {
-    0x4: "<i2",
-    0x7: ">i2"
+    0x4: "little",
+    0x7: "big"
 }
 
 
