@@ -72,7 +72,7 @@ class ImageEncoder:
 
     @classmethod
     def encode_from_image(cls, image, spacing=0):
-        img_array = np.asarray(image)
+        img_array = np.asarray(image.convert("RGBA"))
         width = img_array.shape[1]
         height = img_array.shape[0]
         new_img_array = np.ndarray((height, width), dtype=">u2")
