@@ -63,6 +63,8 @@ class Component:
             paths_list.append(str(rel_path / f"image_{j}.png"))
         if self.static_image:
             self.static_image.save(path / "static.png")
+        if self.masked_image:
+            self.masked_image.save(path / "mask.png")
 
         dump = {}
         if self.comp_type == Component.WIDGET:
@@ -79,7 +81,7 @@ class Component:
             dump["pivot_y"] = self.pivot_y
 
         if self.masked_image is not None:
-            dump["masked_image"] = self.masked_image
+            dump["masked_image"] = str(rel_path / "mask.png")
             dump["mask_new_value"] = self.mask_new_value
             dump["mask_pivot_x"] = self.mask_pivot_x
             dump["mask_pivot_y"] = self.mask_pivot_y

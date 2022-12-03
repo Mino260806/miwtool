@@ -31,7 +31,7 @@ class WatchFaceDecoder(Decoder):
         preview_offset = HEADER_OFFSETS["preview_offset"].extract(self)
         wf.preview = ComponentDecoder(
             f,
-            offsets=ComponentOffset({0x2: ComponentOffset.OffsetInfo(preview_offset)}),
+            offsets=ComponentOffset([(0x2, ComponentOffset.OffsetInfo(preview_offset))]),
             component_type=Component.PREVIEW).get()
         wf.face_id = HEADER_OFFSETS["face_id"].extract(self)
         wf.name = HEADER_OFFSETS["name"].extract(self)
