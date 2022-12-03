@@ -26,14 +26,16 @@ class ComponentEncoder(Encoder):
         self.properties_counter = properties_counter
         self.properties_indexes = properties_counter.copy()
 
-        if self.component.static_image is not None:
+        if self.component.masked_image is not None:
+            assert self.component.static_image is not None
+            self.add_property(0x2, self.encoded_property_2(is_mask=False))
+            self.add_property(0x2, self.encoded_property_2(is_mask=True))
+            self.add_property(0x7, self.encoded_property_7())
+
+        elif self.component.static_image is not None:
             self.add_property(0x2, self.encoded_property_2(is_mask=False))
             if self.component.pivot_x is not None:
                 self.add_property(0x7, self.encoded_property_7())
-
-        if self.component.masked_image is not None:
-            self.add_property(0x2, self.encoded_property_2(is_mask=True))
-            self.add_property(0x7, self.encoded_property_7())
 
         if self.component.images:
             self.add_property(0x3, self.encoded_property_3())

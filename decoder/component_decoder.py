@@ -99,8 +99,9 @@ class ComponentDecoder(Decoder):
             image = self.extract_image(offset, component.swidth, component.sheight, color_profile)
             if component.static_image is None:
                 component.static_image = image
-            else: # for now two static images always mean the second is a mask
-                component.masked_image = image
+            else: # for now two static images always mean the first is a mask
+                component.masked_image = component.static_image
+                component.static_image = image
 
         else:
             for i in range(component.frames_count):
