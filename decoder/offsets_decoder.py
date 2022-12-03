@@ -1,4 +1,4 @@
-from constants import HEADER_OFFSETS, OFFSETS_DETAILS_OFFSETS
+from constants import HEADER_OFFSETS, OFFSETS_DETAILS_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, INVERSE_COORDINATES_TABLE
 from decoder.base_decoder import Decoder
 
 
@@ -10,17 +10,14 @@ class ComponentOffset:
 
     def __init__(self, offsets=None):
         if offsets is None:
-            offsets = {}
+            offsets = []
         self.offsets = offsets
 
     def add_offset(self, offset, block_size, otype):
-        self.offsets[otype] = ComponentOffset.OffsetInfo(offset, block_size)
+        self.offsets.append((otype, ComponentOffset.OffsetInfo(offset, block_size)))
 
-    def __getitem__(self, item):
-        return self.offsets[item]
-
-    def __contains__(self, item):
-        return item in self.offsets
+    def __iter__(self):
+        return self.offsets.__iter__()
 
 
 class ComponentOffsetDecoder(Decoder):
@@ -68,7 +65,7 @@ class ComponentOffsetDecoder(Decoder):
         print(component_index, source_offset_type, hex(source_offset), hex(source_offset_size))
         self.component_offsets[component_index].add_offset(source_offset, source_offset_size, source_offset_type)
 
-        for doffset in self.get_doffsets(source_offset_type, source_offset_size):
+        for doffset in self.get_doffsets(source_offset, source_offset_type, source_offset_size):
             self.seek(source_offset + doffset)
             next_offset_index = self.read_ile(1)
             self.read_ile(2)
@@ -80,22 +77,32 @@ class ComponentOffsetDecoder(Decoder):
             next_offset, next_offset_size = self.raw_offsets[next_offset_type][next_offset_index]
             self.process_offset(component_index, next_offset_type, next_offset, next_offset_size)
 
-    def get_doffsets(self, offset_type, offset_size):
-        useful_info_offset = {
-            0x0: (0x0,),
-            0x2: (),
-            0x3: (),
-            0x7: None
-        }
-
-        if offset_type in useful_info_offset:
-            doffsets = useful_info_offset[offset_type]
-            if offset_type == 0x7:
-                if offset_size == 0x14:
-                    doffsets = (0x8, 0x10)
-                elif offset_size == 0x28: # masked rotation
-                    doffsets = (0x8, 0xc)
-                else:
-                    doffsets = (0x8,)
-            return doffsets
-        return ()
+    def get_doffsets(self, offset, offset_type, offset_size):
+        # useful_info_offset = {
+        #     0x0: (0x0,),
+        #     0x2: (),
+        #     0x3: (),
+        #     0x7: None
+        # }
+        # if offset_type in useful_info_offset:
+        #     doffsets = useful_info_offset[offset_type]
+        #     if offset_type == 0x7:
+        #         if offset_size == 0x14:
+        #             doffsets = (0x8, 0x10)
+        #         elif offset_size == 0x28: # masked rotation
+        #             doffsets = (0x8, 0xc)
+        #         else:
+        #             doffsets = (0x8,)
+        #     return doffsets
+        # return ()
+        if offset_type == 0x0:
+            return (0x0,)
+        elif offset_type == 0x7:
+            ctypes = WIDGET_CONFIGURATION_OFFSETS["coordinate_types"].extract(self, offset)
+            if ctypes == INVERSE_COORDINATES_TABLE["RMSS"]:
+                return (0x8, 0xc)
+            elif ctypes <= 0x16 and offset_size == 0x14: # decimal
+                return (0x8, 0x10)
+            return (0x8,)
+        else:
+            return ()

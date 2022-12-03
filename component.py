@@ -35,7 +35,7 @@ class Component:
 
         # Only is masked rotating widgets (RMSS)
         self.masked_image = None
-        self.mask_new_value = None
+        self.mask_max_value = None
         self.mask_pivot_x = None
         self.mask_pivot_y = None
         self.mask_max_degrees = None
@@ -63,6 +63,8 @@ class Component:
             paths_list.append(str(rel_path / f"image_{j}.png"))
         if self.static_image:
             self.static_image.save(path / "static.png")
+        if self.masked_image:
+            self.masked_image.save(path / "mask.png")
 
         dump = {}
         if self.comp_type == Component.WIDGET:
@@ -79,8 +81,8 @@ class Component:
             dump["pivot_y"] = self.pivot_y
 
         if self.masked_image is not None:
-            dump["masked_image"] = self.masked_image
-            dump["mask_new_value"] = self.mask_new_value
+            dump["mask"] = str(rel_path / "mask.png")
+            dump["mask_max_value"] = self.mask_max_value
             dump["mask_pivot_x"] = self.mask_pivot_x
             dump["mask_pivot_y"] = self.mask_pivot_y
             dump["mask_max_degrees"] = self.mask_max_degrees
@@ -107,8 +109,7 @@ class Component:
         self.pivot_x = dump.get("pivot_x")
         self.pivot_y = dump.get("pivot_y")
 
-        self.masked_image = dump.get("masked_image")
-        self.mask_new_value = dump.get("mask_new_value")
+        self.mask_max_value = dump.get("mask_max_value")
         self.mask_pivot_x = dump.get("mask_pivot_x")
         self.mask_pivot_y = dump.get("mask_pivot_y")
         self.mask_max_degrees = dump.get("mask_max_degrees")
@@ -125,6 +126,10 @@ class Component:
         static_path = dump.get("static")
         if static_path:
             self.static_image = Image.open(path / static_path).convert("RGBA")
+
+        mask_path = dump.get("mask")
+        if mask_path:
+            self.masked_image = Image.open(path / mask_path).convert("RGBA")
 
         dynamic_paths = dump.get("dynamic")
         if dynamic_paths:

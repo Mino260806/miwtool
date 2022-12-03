@@ -1,5 +1,3 @@
-from io import BytesIO
-
 import numpy as np
 from color import Color
 from PIL import Image
