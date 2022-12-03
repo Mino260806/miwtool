@@ -82,7 +82,7 @@ WIDGET_CONFIGURATION_OFFSETS = {
     "coordinate_types": OffsetInfo(0x3, size=0x1),
     "property_index": OffsetInfo(0x8, size=0x1),
     "next_property_type": OffsetInfo(0xb, size=0x1),
-    "has_values_ranges": OffsetInfo(0xd, size=0x1),
+    "has_values_ranges": OffsetInfo(0xd, size=0x1), # TODO see what this does
     "second_property_index": OffsetInfo(0x10, size=0x1),
     "second_property_type": OffsetInfo(0x13, size=0x1),
 

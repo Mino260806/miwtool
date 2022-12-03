@@ -59,9 +59,7 @@ class ComponentDecoder(Decoder):
                     component.max_degrees = WIDGET_CONFIGURATION_OFFSETS["max_degrees"].extract(self)
 
                 if coordinate_types == INVERSE_COORDINATES_TABLE["RMSS"]: # rotational masked
-                    # TODO support for multiple static images
-                    # raise RuntimeError("Unsupported coordinates type: RMSS")
-                    component.mask_new_value = WIDGET_CONFIGURATION_OFFSETS["mask_max_value"].extract(self)
+                    component.mask_max_value = WIDGET_CONFIGURATION_OFFSETS["mask_max_value"].extract(self)
                     component.mask_pivot_x = WIDGET_CONFIGURATION_OFFSETS["mask_pivot_x"].extract(self)
                     component.mask_pivot_y = WIDGET_CONFIGURATION_OFFSETS["mask_pivot_y"].extract(self)
                     component.mask_max_degrees = WIDGET_CONFIGURATION_OFFSETS["mask_max_degrees"].extract(self)

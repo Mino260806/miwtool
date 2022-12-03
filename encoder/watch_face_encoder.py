@@ -36,15 +36,14 @@ class WatchFaceEncoder(Encoder):
         self.seek(data_offset)
 
         for component_encoder in self.component_encoders:
-            for property_type in component_encoder.get_property_types():
-                property_data = component_encoder.get_bytes(property_type)
+            for property_type, property_index, property_data in component_encoder.iter_properties():
                 self.offsets_encoder.add_offset(
-                    property_type, component_encoder.properties_indexes[property_type],
+                    property_type, property_index,
                     self.f.tell(), len(property_data)
                 )
                 self.write(property_data)
         preview_offset = self.whereami()
-        self.write(self.preview_encoder.get_bytes(0x2))
+        self.write(self.preview_encoder.encoded_data[0][2])
 
         bytes_table = self.offsets_encoder.get_bytes_table()
         HEADER_OFFSETS["components_offsets"].encode(self, bytes_table)
@@ -59,6 +58,7 @@ class WatchFaceEncoder(Encoder):
         for component in self.watch_face.components:
             self.component_encoders.append(ComponentEncoder(component))
             self.component_encoders[-1].encode(counter)
+            print(counter)
         return counter
 
     def encode_preview(self):

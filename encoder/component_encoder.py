@@ -13,7 +13,7 @@ class ComponentEncoder(Encoder):
 
         self.is_preview = is_preview
         self.component = component
-        self.encoded_data = {}
+        self.encoded_data = []
         self.properties_counter = None
         self.properties_indexes = None
 
@@ -27,32 +27,48 @@ class ComponentEncoder(Encoder):
         self.properties_indexes = properties_counter.copy()
 
         if self.component.static_image is not None:
-            self.encoded_data[2] = self.encoded_property_2()
+            self.add_property(0x2, self.encoded_property_2(is_mask=False))
             if self.component.pivot_x is not None:
-                self.encoded_data[7] = self.encoded_property_7()
+                self.add_property(0x7, self.encoded_property_7())
+
+        if self.component.masked_image is not None:
+            self.add_property(0x2, self.encoded_property_2(is_mask=True))
+            self.add_property(0x7, self.encoded_property_7())
 
         if self.component.images:
-            self.encoded_data[3] = self.encoded_property_3()
+            self.add_property(0x3, self.encoded_property_3())
             assert self.component.widget_type is not None
-            self.encoded_data[7] = self.encoded_property_7()
+            self.add_property(0x7, self.encoded_property_7())
 
         if not self.is_preview:
-            self.encoded_data[0] = self.encoded_property_0()
+            self.add_property(0x0, self.encoded_property_0())
             # print(" ".join(hex(b) for b in self.encoded_data[0]))
             properties_counter[0] += 1
 
     def has_property(self, property_type):
         return property_type in self.encoded_data
 
-    def get_property_types(self):
-        result = sorted(self.encoded_data.keys())
-        if 0x2 in result and 0x3 in result:
-            i2, i3 = result.index(0x2), result.index(0x3)
-            result[i2], result[i3] = result[i3], result[i2]
-        return result
+    def sort_properties(self):
+        def custom_key(p):
+            if p[0] == 0x2:
+                return 0x3
+            elif p[0] == 0x3:
+                return 0x2
+            return p[0]
+        self.encoded_data.sort(key=custom_key)
+        # if 0x2 in result and 0x3 in result:
+        #     i2, i3 = result.index(0x2), result.index(0x3)
+        #     result[i2], result[i3] = result[i3], result[i2]
 
-    def get_bytes(self, property_type):
-        return self.encoded_data[property_type]
+    # def get_bytes(self, property_type):
+    #     return self.encoded_data[property_type]
+
+    def iter_properties(self):
+        self.sort_properties()
+        return self.encoded_data.__iter__()
+
+    def add_property(self, property_type, property_data):
+        self.encoded_data.append((property_type, self.properties_counter[property_type], property_data))
 
     def encoded_property_0(self):
         self.set_buffer(0x10)
@@ -104,6 +120,21 @@ class ComponentEncoder(Encoder):
             WIDGET_CONFIGURATION_OFFSETS["max_value"].encode(self, self.component.max_value)
             WIDGET_CONFIGURATION_OFFSETS["max_degrees"].encode(self, self.component.max_degrees)
 
+        if self._next_property_type == 0x2 and \
+                self.component.masked_image is not None:
+            WIDGET_CONFIGURATION_OFFSETS["property_index"].encode(self, self.properties_counter[0x2] - 2)
+            WIDGET_CONFIGURATION_OFFSETS["next_property_type"].encode(self, 0x2)
+            WIDGET_CONFIGURATION_OFFSETS["masked_image_property_index"].encode(self, self.properties_counter[0x2] - 1)
+            WIDGET_CONFIGURATION_OFFSETS["masked_image_property_type"].encode(self, 0x2)
+
+        if self.component.mask_max_value:
+            WIDGET_CONFIGURATION_OFFSETS["mask_max_value"].encode(self, self.component.mask_max_value)
+            WIDGET_CONFIGURATION_OFFSETS["mask_pivot_x"].encode(self, self.component.mask_pivot_x)
+            WIDGET_CONFIGURATION_OFFSETS["mask_pivot_y"].encode(self, self.component.mask_pivot_y)
+            WIDGET_CONFIGURATION_OFFSETS["mask_max_degrees"].encode(self, self.component.mask_max_degrees)
+            WIDGET_CONFIGURATION_OFFSETS["mask_unk_1"].encode(self, self.component.mask_unk_1)
+            WIDGET_CONFIGURATION_OFFSETS["mask_unk_2"].encode(self, self.component.mask_unk_2)
+
         self._next_property_type = 7
 
         return self.pop_buffer()
@@ -128,7 +159,7 @@ class ComponentEncoder(Encoder):
 
         return self.pop_buffer()
 
-    def encoded_property_2(self):
+    def encoded_property_2(self, is_mask):
         self.set_buffer()
 
         property_index = self.bump_property()
@@ -138,7 +169,10 @@ class ComponentEncoder(Encoder):
         IMAGE_COMPONENT_OFFSETS["height"].encode(self, self.component.sheight)
         IMAGE_COMPONENT_OFFSETS["mystery_number"].encode(self, self.component.swidth * self.component.sheight * 3)
         IMAGE_COMPONENT_OFFSETS["pixel_array"].goto(self)
-        self.encode_image(self.component.static_image)
+        if not is_mask:
+            self.encode_image(self.component.static_image)
+        else:
+            self.encode_image(self.component.masked_image)
         # print(hex(self.f.getbuffer().nbytes))
 
         self._next_property_type = 2

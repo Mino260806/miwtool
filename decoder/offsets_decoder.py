@@ -16,16 +16,6 @@ class ComponentOffset:
     def add_offset(self, offset, block_size, otype):
         self.offsets.append((otype, ComponentOffset.OffsetInfo(offset, block_size)))
 
-    def __getitem__(self, item):
-        print("getitem!")
-        raise RuntimeError
-        return self.offsets[item]
-
-    def __contains__(self, item):
-        print("contains!")
-        raise RuntimeError
-        return item in self.offsets
-
     def __iter__(self):
         return self.offsets.__iter__()
 
@@ -111,7 +101,7 @@ class ComponentOffsetDecoder(Decoder):
             ctypes = WIDGET_CONFIGURATION_OFFSETS["coordinate_types"].extract(self, offset)
             if ctypes == INVERSE_COORDINATES_TABLE["RMSS"]:
                 return (0x8, 0xc)
-            elif ctypes <= 0x16 and offset == 0x14: # decimal
+            elif ctypes <= 0x16 and offset_size == 0x14: # decimal
                 return (0x8, 0x10)
             return (0x8,)
         else:
