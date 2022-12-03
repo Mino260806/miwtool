@@ -28,8 +28,8 @@ class ComponentEncoder(Encoder):
 
         if self.component.masked_image is not None:
             assert self.component.static_image is not None
-            self.add_property(0x2, self.encoded_property_2(is_mask=False))
             self.add_property(0x2, self.encoded_property_2(is_mask=True))
+            self.add_property(0x2, self.encoded_property_2(is_mask=False))
             self.add_property(0x7, self.encoded_property_7())
 
         elif self.component.static_image is not None:
