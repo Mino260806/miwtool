@@ -21,7 +21,9 @@ Or use the script example: "scripts for encoding-decoding\unpack.bat" (you must 
 ```commandline
 python main.py --encode /path/to/input --output /path/to/output
 ```
-Or use the script example: "scripts for encoding-decoding\pack.bat" (you must drag and drop the source file/folder to the bat file of the script, (-ce little parameter in script only needed for Redmi Watch 2 China and POCO Watch))
+Or use the script example: 
+1. For Redmi Watch 2 China/Poco Watch: "scripts for encoding-decoding\pack.bat" (you must drag and drop the source file/folder to the bat file of the script)
+2. For Redmi Watch 2 Lite: "scripts for encoding-decoding\pack-lite.bat" (you must drag and drop the source file/folder to the bat file of the script)
 
 ## Creating Watch Faces the easy way
 
@@ -45,7 +47,9 @@ in the same folder then the images you imported earlier
 ```commandline
 python main.py --encode_wfeditor /path/to/input --output /path/to/output
 ```
-Or use the script example: "scripts for encoding-decoding\encode_wfeditor.bat" (you must drag and drop the source file/folder to the bat file of the script, (-ce little parameter in script only needed for Redmi Watch 2 China and POCO Watch))
+Or use the script example: 
+1. For Redmi Watch 2 China/Poco Watch: "scripts for encoding-decoding\encode_wfeditor.bat" (you must drag and drop the source file/folder to the bat file of the script)
+2. For Redmi Watch 2 Lite: "scripts for encoding-decoding\encode-lite_wfeditor.bat" (you must drag and drop the source file/folder to the bat file of the script)
 
 ### Compiling to unpacked file
 ```commandline
