@@ -15,15 +15,15 @@ python -m pip install -r requirements.txt
 ```commandline
 python main.py --decode /path/to/input --output /path/to/output
 ```
-Or use the script example: "scripts for encoding-decoding\unpack.bat" (you must drag and drop the source file/folder to the bat file of the script)
+Or use the script example: "bin\unpack.bat" (you must drag and drop the source file/folder to the bat file of the script)
 
 - Repacking
 ```commandline
 python main.py --encode /path/to/input --output /path/to/output
 ```
 Or use the script example: 
-1. For Redmi Watch 2 China/Poco Watch: "scripts for encoding-decoding\pack.bat" (you must drag and drop the source file/folder to the bat file of the script)
-2. For Redmi Watch 2 Lite: "scripts for encoding-decoding\pack-lite.bat" (you must drag and drop the source file/folder to the bat file of the script)
+1. For Redmi Watch 2 China/Poco Watch: "bin\pack.bat" (you must drag and drop the source file/folder to the bat file of the script)
+2. For Redmi Watch 2 Lite: "bin\pack-lite.bat" (you must drag and drop the source file/folder to the bat file of the script)
 
 ## Creating Watch Faces the easy way
 
@@ -48,14 +48,14 @@ in the same folder then the images you imported earlier
 python main.py --encode_wfeditor /path/to/input --output /path/to/output
 ```
 Or use the script example: 
-1. For Redmi Watch 2 China/Poco Watch: "scripts for encoding-decoding\encode_wfeditor.bat" (you must drag and drop the source file/folder to the bat file of the script)
-2. For Redmi Watch 2 Lite: "scripts for encoding-decoding\encode-lite_wfeditor.bat" (you must drag and drop the source file/folder to the bat file of the script)
+1. For Redmi Watch 2 China/Poco Watch: "bin\encode_wfeditor.bat" (you must drag and drop the source file/folder to the bat file of the script)
+2. For Redmi Watch 2 Lite: "bin\encode-lite_wfeditor.bat" (you must drag and drop the source file/folder to the bat file of the script)
 
 ### Compiling to unpacked file
 ```commandline
 python main.py --decode_wfeditor /path/to/input --output /path/to/output
 ```
-Or use the script example: "scripts for encoding-decoding\decode_wfeditor.bat" (you must drag and drop the source file/folder to the bat file of the script)
+Or use the script example: "bin\decode_wfeditor.bat" (you must drag and drop the source file/folder to the bat file of the script)
 
 where `path/to/input` refers to the folder which contains the exported "watchface.json" and the images
 
