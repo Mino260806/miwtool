@@ -1,5 +1,5 @@
 # miwtool
-A tool for manipulating Redmi Watch 2 Lite watchface files
+A tool for manipulating Redmi Watch 2 Lite, Redmi Watch 2 China, Poco Watch watchface files
 
 -----
 ## Installation
