@@ -33,7 +33,7 @@ elif __name__ == '__main__':
     group.add_argument("-ew", "--encode_wfeditor", type=str)
     parser.add_argument("-o", "--output", type=str, default="watchface")
 
-    parser.add_argument("-ce", "--colorendianness", type=str, choices=["little", "big"], default="big")
+    parser.add_argument("-ce", "--colorendianness", type=str, choices=["little", "big", "l", "b"], default="big")
 
     args = parser.parse_args()
     config = Config(args.colorendianness)
