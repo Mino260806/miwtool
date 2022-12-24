@@ -39,7 +39,8 @@ class WatchFaceDecoder(Decoder):
         components_offsets_end = HEADER_OFFSETS["components_offsets_end"].extract(self)
         self.offsets_decoder = ComponentOffsetDecoder(f, components_offsets_end)
         self.components_offsets = self.offsets_decoder.component_offsets
-        for component_offset in self.components_offsets:
+        for i, component_offset in enumerate(self.components_offsets):
+            print(f"decoding component {i}...")
             wf.components.append(ComponentDecoder(f, offsets=component_offset).get())
 
     def get(self):

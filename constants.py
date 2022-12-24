@@ -94,14 +94,25 @@ WIDGET_CONFIGURATION_OFFSETS = {
 
     "values_ranges_start": OffsetInfo(0x10, size=-1),
 
+# RMSS
     "masked_image_property_index": OffsetInfo(0xc, size=0x1),
     "masked_image_property_type": OffsetInfo(0xf, size=0x1),
     "mask_max_value": OffsetInfo(0x19, size=0x2),
     "mask_pivot_x": OffsetInfo(0x1c, size=0x2),
     "mask_pivot_y": OffsetInfo(0x1e, size=0x2),
     "mask_max_degrees": OffsetInfo(0x22, size=0x2),
-    "mask_unk_1": OffsetInfo(0x24, size=0x2),
-    "mask_unk_2": OffsetInfo(0x26, size=0x2),
+    "mask_rotation_unk1": OffsetInfo(0x24, size=0x2),
+    "mask_rotation_unk2": OffsetInfo(0x26, size=0x2),
+
+# TMSS
+    # "masked_image_property_index": OffsetInfo(0xc, size=0x1),
+    # "masked_image_property_type": OffsetInfo(0xf, size=0x1),
+    # "mask_max_value": OffsetInfo(0x19, size=0x2),
+    "mask_translation_unk1": OffsetInfo(0x1e, size=0x2),
+    "mask_translation_unk2": OffsetInfo(0x20, size=0x2),
+    "mask_translation_unk3": OffsetInfo(0x22, size=0x2),
+    "mask_translation_unk4": OffsetInfo(0x24, size=0x2),
+    "mask_translation_unk5": OffsetInfo(0x26, size=0x2),
 }
 
 
@@ -229,7 +240,8 @@ COORDINATES_TABLE = {
     0x20: CoordinateRelative("SS", CoordType.START, CoordType.START, is_number=False),
 
     0x30: CoordinateRelative("RSS", CoordType.START, CoordType.START, is_number=True, is_clock=True),
-    0x40: CoordinateRelative("RMSS", CoordType.START, CoordType.START, is_number=True, is_clock=True),
+    0x40: CoordinateRelative("RMSS", CoordType.START, CoordType.START, is_number=True, is_clock=True, is_masked=True),
+    0x50: CoordinateRelative("TMSS", CoordType.START, CoordType.START, is_number=True, is_clock=True, is_masked=True),
 }
 
 INVERSE_COORDINATES_TABLE = {}
