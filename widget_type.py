@@ -1,5 +1,5 @@
-from enum import Enum
-from constants import WIDGET_TYPES, INVERSE_WIDGET_TYPES, Format, COORDINATES_TABLE, INVERSE_COORDINATES_TABLE
+from constants import WIDGET_TYPES, INVERSE_WIDGET_TYPES, COORDINATES_TABLE, INVERSE_COORDINATES_TABLE
+from structure import Format
 
 
 class WidgetType:
@@ -7,12 +7,12 @@ class WidgetType:
         self.wtype = wtype
         self.category = category
         self.wformat = Format(wformat)
-        self.coordinate_types = COORDINATES_TABLE.get(ctypes)
-        if self.coordinate_types is None:
+        self.ctype = COORDINATES_TABLE.get(ctypes)
+        if self.ctype is None:
             raise RuntimeError(f"Unknown coordinates type: {hex(ctypes)}")
 
     @classmethod
-    def from_string_attrs(cls, wtype_d, category_d, wformat_d, coordinate_types_d):
+    def from_string_attrs(cls, wtype_d, category_d, wformat_d, ctype):
         wtype = None
         category = None
 
@@ -22,9 +22,9 @@ class WidgetType:
                 wtype = WIDGET_TYPES.get(category).inverse_get(wtype_d)
 
         wformat = Format[wformat_d]
-        coordinate_types = INVERSE_COORDINATES_TABLE.get(coordinate_types_d)
+        ctype = INVERSE_COORDINATES_TABLE.get(ctype)
 
-        return WidgetType(wtype, category, wformat, coordinate_types)
+        return WidgetType(wtype, category, wformat, ctype)
 
     def __str__(self):
         category = self.get_category_string()
@@ -51,19 +51,19 @@ class WidgetType:
             "category": self.get_category_string(),
             "type": self.get_type_string(),
             "format": self.wformat.name,
-            "coordinate_types": self.coordinate_types.cid
+            "ctype": self.ctype.cid
         }
 
     def get_int_properties(self):
         return self.wtype, self.category, self.wformat.value, \
-            INVERSE_COORDINATES_TABLE[self.coordinate_types.cid]
+            INVERSE_COORDINATES_TABLE[self.ctype.cid]
 
     @classmethod
     def load_from_dump(cls, dump):
         category_d = dump.get("category")
         wtype_d = dump.get("type")
         wformat_d = dump.get("format")
-        coordinate_types_d = dump.get("coordinate_types")
+        ctype_d = dump.get("ctype")
 
-        return cls.from_string_attrs(wtype_d, category_d, wformat_d, coordinate_types_d)
+        return cls.from_string_attrs(wtype_d, category_d, wformat_d, ctype_d)
 

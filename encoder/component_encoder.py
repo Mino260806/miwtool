@@ -1,8 +1,7 @@
-from constants import COMPONENT_DETAILS_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, IMAGE_COMPONENT_OFFSETS, Format, \
-    COLOR_PROFILES
+from constants import COMPONENT_DETAILS_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, IMAGE_COMPONENT_OFFSETS
+from structure import Format
 from encoder.base_encoder import Encoder
 from image import ImageEncoder
-from widget_type import WidgetType
 
 
 class ComponentEncoder(Encoder):
@@ -101,7 +100,7 @@ class ComponentEncoder(Encoder):
         WIDGET_CONFIGURATION_OFFSETS["widget_type"].encode(self, wtype)
         WIDGET_CONFIGURATION_OFFSETS["category"].encode(self, category)
         WIDGET_CONFIGURATION_OFFSETS["widget_format"].encode(self, wformat)
-        WIDGET_CONFIGURATION_OFFSETS["coordinate_types"].encode(self, ctype)
+        WIDGET_CONFIGURATION_OFFSETS["ctype"].encode(self, ctype)
         WIDGET_CONFIGURATION_OFFSETS["property_index"].encode(self, property_index)
         WIDGET_CONFIGURATION_OFFSETS["next_property_type"].encode(self, self._next_property_type)
 

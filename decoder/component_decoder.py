@@ -1,13 +1,11 @@
-import numpy as np
-from PIL import Image
-
-from constants import COMPONENT_DETAILS_OFFSETS, IMAGE_COMPONENT_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, Format, \
+from constants import COMPONENT_DETAILS_OFFSETS, IMAGE_COMPONENT_OFFSETS, WIDGET_CONFIGURATION_OFFSETS, \
     COLOR_PROFILES, INVERSE_COORDINATES_TABLE
 from decoder.base_decoder import Decoder
 from component import Component
 from image import ImageDecoder
 from decoder.offsets_decoder import ComponentOffset
 from widget_type import WidgetType
+from structure import Format
 
 
 class ComponentDecoder(Decoder):
@@ -49,22 +47,24 @@ class ComponentDecoder(Decoder):
                 wtype = WIDGET_CONFIGURATION_OFFSETS["widget_type"].extract(self)
                 category = WIDGET_CONFIGURATION_OFFSETS["category"].extract(self)
                 wformat = WIDGET_CONFIGURATION_OFFSETS["widget_format"].extract(self)
-                coordinate_types = WIDGET_CONFIGURATION_OFFSETS["coordinate_types"].extract(self)
+                ctype = WIDGET_CONFIGURATION_OFFSETS["ctype"].extract(self)
 
-                if coordinate_types == INVERSE_COORDINATES_TABLE["RSS"]: # clock
+                if ctype == INVERSE_COORDINATES_TABLE["RSS"]: # clock*
                     assert offset_info.size >= 0x20
-                    component.max_value = WIDGET_CONFIGURATION_OFFSETS["max_value"].extract(self)
-                    component.pivot_x = WIDGET_CONFIGURATION_OFFSETS["pivot_x"].extract(self)
-                    component.pivot_y = WIDGET_CONFIGURATION_OFFSETS["pivot_y"].extract(self)
-                    component.max_degrees = WIDGET_CONFIGURATION_OFFSETS["max_degrees"].extract(self)
+                    component.sattr = Component.RotationAttr()
+                    component.sattr.max_value = WIDGET_CONFIGURATION_OFFSETS["max_value"].extract(self)
+                    component.sattr.pivot_x = WIDGET_CONFIGURATION_OFFSETS["pivot_x"].extract(self)
+                    component.sattr.pivot_y = WIDGET_CONFIGURATION_OFFSETS["pivot_y"].extract(self)
+                    component.sattr.max_degrees = WIDGET_CONFIGURATION_OFFSETS["max_degrees"].extract(self)
 
-                if coordinate_types == INVERSE_COORDINATES_TABLE["RMSS"]: # rotational masked
-                    component.mask_max_value = WIDGET_CONFIGURATION_OFFSETS["mask_max_value"].extract(self)
-                    component.mask_pivot_x = WIDGET_CONFIGURATION_OFFSETS["mask_pivot_x"].extract(self)
-                    component.mask_pivot_y = WIDGET_CONFIGURATION_OFFSETS["mask_pivot_y"].extract(self)
-                    component.mask_max_degrees = WIDGET_CONFIGURATION_OFFSETS["mask_max_degrees"].extract(self)
-                    component.mask_unk_1 = WIDGET_CONFIGURATION_OFFSETS["mask_unk_1"].extract(self)
-                    component.mask_unk_2 = WIDGET_CONFIGURATION_OFFSETS["mask_unk_2"].extract(self)
+                if ctype == INVERSE_COORDINATES_TABLE["RMSS"]: # rotational masked
+                    component.sattr = Component.MaskedRotationAttr()
+                    component.sattr.mask_max_value = WIDGET_CONFIGURATION_OFFSETS["mask_max_value"].extract(self)
+                    component.sattr.mask_pivot_x = WIDGET_CONFIGURATION_OFFSETS["mask_pivot_x"].extract(self)
+                    component.sattr.mask_pivot_y = WIDGET_CONFIGURATION_OFFSETS["mask_pivot_y"].extract(self)
+                    component.sattr.mask_max_degrees = WIDGET_CONFIGURATION_OFFSETS["mask_max_degrees"].extract(self)
+                    component.sattr.mask_unk_1 = WIDGET_CONFIGURATION_OFFSETS["mask_unk_1"].extract(self)
+                    component.sattr.mask_unk_2 = WIDGET_CONFIGURATION_OFFSETS["mask_unk_2"].extract(self)
 
                 has_values_ranges = WIDGET_CONFIGURATION_OFFSETS["has_values_ranges"].extract(self)
                 if has_values_ranges == 0x2:
@@ -75,7 +75,7 @@ class ComponentDecoder(Decoder):
                         r = self.read_ile(0x4)
                         component.values_ranges.append(r)
 
-                component.widget_type = WidgetType(wtype, category, wformat, coordinate_types)
+                component.widget_type = WidgetType(wtype, category, wformat, ctype)
 
     DYNAMIC = 0
     STATIC = 1

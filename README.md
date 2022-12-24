@@ -154,23 +154,23 @@ or `com.xiaomi.wearable` depending on your region)
 <summary>component attributes</summary>
 
 
-| Attribute           | Condition       | Description                                      | Data type     |
-|---------------------|-----------------|--------------------------------------------------|---------------|
-| x                   | *               | x coordinate                                     | int16         |
-| y                   | *               | y coordinate                                     | int16         |
-| static              | optional        | static image path                                | string        |
-| dynamic             | optional        | dynamic images paths                             | array[string] |
-| type                | optional        | defines the type of a dynamic widget             | object        |
-| -- category         | *               | [TIME / BATTERY...]                              | string        |
-| -- type             | *               | [HOUR / TEMPERATURE / ...]                       | string        |
-| -- format           | *               | the format to display  the data                  | string        |
-| -- coordinate_types | *               | what x and y mean                                | string        |
-| pivot_x             | if R            | xcenter of rotation                              | int16         |
-| pivot_y             | if R            | ycenter of rotation                              | int16         |
-| max_value           | if R            | max_value that defines a rotation                | int16         |
-| max_degrees         | if R            | degrees corresponding to max_value (3600° is 2π) | int16         |
-| values_ranges       | if FORMAT_IMAGE | value range for each image                       | array[uint32] |
-| spacing             | optional        | spacing in pixels at the end of each image       | int           |
+| Attribute     | Condition       | Description                                      | Data type     |
+|---------------|-----------------|--------------------------------------------------|---------------|
+| x             | *               | x coordinate                                     | int16         |
+| y             | *               | y coordinate                                     | int16         |
+| static        | optional        | static image path                                | string        |
+| dynamic       | optional        | dynamic images paths                             | array[string] |
+| type          | optional        | defines the type of a dynamic widget             | object        |
+| -- category   | *               | [TIME / BATTERY...]                              | string        |
+| -- type       | *               | [HOUR / TEMPERATURE / ...]                       | string        |
+| -- format     | *               | the format to display  the data                  | string        |
+| -- ctype      | *               | what x and y mean                                | string        |
+| pivot_x       | if R            | xcenter of rotation                              | int16         |
+| pivot_y       | if R            | ycenter of rotation                              | int16         |
+| max_value     | if R            | max_value that defines a rotation                | int16         |
+| max_degrees   | if R            | degrees corresponding to max_value (3600° is 2π) | int16         |
+| values_ranges | if FORMAT_IMAGE | value range for each image                       | array[uint32] |
+| spacing       | optional        | spacing in pixels at the end of each image       | int           |
 
 </details>
 
@@ -178,7 +178,7 @@ or `com.xiaomi.wearable` depending on your region)
 <summary>[Notes]</summary>
 
 - Images can have any names and can be placed in any folder
-- All categories, types, formats, and coordinate_types can be found in `constants.py`
+- All categories, types, formats, and ctypes can be found in `constants.py`
 - Examples can be found in ./examples/watchfaces/decoded
 </details>
 

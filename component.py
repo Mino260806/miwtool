@@ -27,20 +27,7 @@ class Component:
         self.widget_type = None
         self.spacing = 0
 
-        # Only in rotating widgets (ex clock)
-        self.max_degrees = None
-        self.pivot_y = None
-        self.pivot_x = None
-        self.max_value = None
-
-        # Only is masked rotating widgets (RMSS)
-        self.masked_image = None
-        self.mask_max_value = None
-        self.mask_pivot_x = None
-        self.mask_pivot_y = None
-        self.mask_max_degrees = None
-        self.mask_unk_1 = None
-        self.mask_unk_2 = None
+        self.sattr = None
 
     def show(self):
         images = []
@@ -63,8 +50,8 @@ class Component:
             paths_list.append(str(rel_path / f"image_{j}.png"))
         if self.static_image:
             self.static_image.save(path / "static.png")
-        if self.masked_image:
-            self.masked_image.save(path / "mask.png")
+        if isinstance(self.sattr, Component.MaskedRotationAttr):
+            self.sattr.masked_image.save(path / "mask.png")
 
         dump = {}
         if self.comp_type == Component.WIDGET:
@@ -74,20 +61,22 @@ class Component:
         if self.widget_type is not None:
             dump["type"] = self.widget_type.dump()
 
-        if self.max_degrees is not None:
-            dump["max_degrees"] = self.max_degrees
-            dump["max_value"] = self.max_value
-            dump["pivot_x"] = self.pivot_x
-            dump["pivot_y"] = self.pivot_y
+        if isinstance(self.sattr, Component.RotationAttr):
+            dump["rotation"] = {}
+            dump["rotation"]["max_degrees"] = self.sattr.max_degrees
+            dump["rotation"]["max_value"] = self.sattr.max_value
+            dump["rotation"]["pivot_x"] = self.sattr.pivot_x
+            dump["rotation"]["pivot_y"] = self.sattr.pivot_y
 
-        if self.masked_image is not None:
-            dump["mask"] = str(rel_path / "mask.png")
-            dump["mask_max_value"] = self.mask_max_value
-            dump["mask_pivot_x"] = self.mask_pivot_x
-            dump["mask_pivot_y"] = self.mask_pivot_y
-            dump["mask_max_degrees"] = self.mask_max_degrees
-            dump["mask_unk_1"] = self.mask_unk_1
-            dump["mask_unk_2"] = self.mask_unk_2
+        if isinstance(self.sattr, Component.MaskedRotationAttr):
+            dump["masked_rotation"] = {}
+            dump["masked_rotation"]["mask"] = str(rel_path / "mask.png")
+            dump["masked_rotation"]["mask_max_value"] = self.sattr.mask_max_value
+            dump["masked_rotation"]["mask_pivot_x"] = self.sattr.mask_pivot_x
+            dump["masked_rotation"]["mask_pivot_y"] = self.sattr.mask_pivot_y
+            dump["masked_rotation"]["mask_max_degrees"] = self.sattr.mask_max_degrees
+            dump["masked_rotation"]["mask_unk_1"] = self.sattr.mask_unk_1
+            dump["masked_rotation"]["mask_unk_2"] = self.sattr.mask_unk_2
 
         if self.values_ranges:
             dump["values_ranges"] = self.values_ranges
@@ -104,17 +93,23 @@ class Component:
         self.x = dump.get("x")
         self.y = dump.get("y")
 
-        self.max_degrees = dump.get("max_degrees")
-        self.max_value = dump.get("max_value")
-        self.pivot_x = dump.get("pivot_x")
-        self.pivot_y = dump.get("pivot_y")
+        rotation_attr = dump.get("rotation")
+        if rotation_attr is not None:
+            self.sattr = Component.RotationAttr()
+            self.sattr.max_degrees = rotation_attr.get("max_degrees")
+            self.sattr.max_value = rotation_attr.get("max_value")
+            self.sattr.pivot_x = rotation_attr.get("pivot_x")
+            self.sattr.pivot_y = rotation_attr.get("pivot_y")
 
-        self.mask_max_value = dump.get("mask_max_value")
-        self.mask_pivot_x = dump.get("mask_pivot_x")
-        self.mask_pivot_y = dump.get("mask_pivot_y")
-        self.mask_max_degrees = dump.get("mask_max_degrees")
-        self.mask_unk_1 = dump.get("mask_unk_1")
-        self.mask_unk_2 = dump.get("mask_unk_2")
+        masked_rotation_attr = dump.get("masked_rotation")
+        if masked_rotation_attr is not None:
+            self.sattr = Component.MaskedRotationAttr()
+            self.sattr.mask_max_value = dump.get("mask_max_value")
+            self.sattr.mask_pivot_x = dump.get("mask_pivot_x")
+            self.sattr.mask_pivot_y = dump.get("mask_pivot_y")
+            self.sattr.mask_max_degrees = dump.get("mask_max_degrees")
+            self.sattr.mask_unk_1 = dump.get("mask_unk_1")
+            self.sattr.mask_unk_2 = dump.get("mask_unk_2")
 
         self.values_ranges = dump.get("values_ranges") or []
         self.spacing = dump.get("spacing") or 0
@@ -148,3 +143,20 @@ class Component:
         if self.static_image and (self.swidth is None or self.sheight is None):
             self.swidth = self.static_image.size[0] + self.spacing
             self.sheight = self.static_image.size[1]
+
+    class RotationAttr:
+        def __init__(self):
+           self.max_degrees = None
+           self.pivot_y = None
+           self.pivot_x = None
+           self.max_value = None
+
+    class MaskedRotationAttr:
+        def __init__(self):
+            self.masked_image = None
+            self.mask_max_value = None
+            self.mask_pivot_x = None
+            self.mask_pivot_y = None
+            self.mask_max_degrees = None
+            self.mask_unk_1 = None
+            self.mask_unk_2 = None
