@@ -98,10 +98,10 @@ class ComponentOffsetDecoder(Decoder):
         if offset_type == 0x0:
             return (0x0,)
         elif offset_type == 0x7:
-            ctypes = WIDGET_CONFIGURATION_OFFSETS["ctype"].extract(self, offset)
-            if ctypes == INVERSE_COORDINATES_TABLE["RMSS"]:
+            ctype = WIDGET_CONFIGURATION_OFFSETS["ctype"].extract(self, offset)
+            if ctype == INVERSE_COORDINATES_TABLE["RMSS"]:
                 return (0x8, 0xc)
-            elif ctypes <= 0x16 and offset_size == 0x14: # decimal
+            elif ctype <= 0x16 and offset_size == 0x14: # decimal
                 return (0x8, 0x10)
             return (0x8,)
         else:
