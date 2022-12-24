@@ -6,7 +6,7 @@ class WidgetType:
     def __init__(self, wtype, category, wformat, ctype):
         self.wtype = wtype
         self.category = category
-        self.wformat = Format(wformat)
+        self.wformat = wformat
         self.ctype = COORDINATES_TABLE.get(ctype)
         if self.ctype is None:
             raise RuntimeError(f"Unknown coordinates type: {hex(ctype)}")
@@ -21,7 +21,7 @@ class WidgetType:
             if category is not None:
                 wtype = WIDGET_TYPES.get(category).inverse_get(wtype_d)
 
-        wformat = Format[wformat_d]
+        wformat = Format.from_string(wformat_d)
         ctype = INVERSE_COORDINATES_TABLE.get(ctype)
 
         return WidgetType(wtype, category, wformat, ctype)
@@ -50,7 +50,7 @@ class WidgetType:
         return {
             "category": self.get_category_string(),
             "type": self.get_type_string(),
-            "format": self.wformat.name,
+            "format": Format.to_string(self.wformat),
             "ctype": self.ctype.cid
         }
 

@@ -88,12 +88,23 @@ class CoordinateRelative:
         return hash(self.cid)
 
 
-class Format(Enum):
+class Format:
     FORMAT_IMAGE = 0x0
     FORMAT_DECIMAL_2_DIGITS = 0x2
     FORMAT_DECIMAL_3_DIGITS = 0x3
     FORMAT_DECIMAL_4_DIGITS = 0x4
     FORMAT_DECIMAL_5_DIGITS = 0x5
+
+    @classmethod
+    def from_string(cls, string):
+        return cls.__dict__[string]
+
+    @classmethod
+    def to_string(cls, wformat):
+        for format_str, format_int in cls.__dict__.items():
+            if format_int == wformat:
+                return format_str
+        raise RuntimeError(f"No such Format {wformat}")
 
 
 class CoordType(Enum):

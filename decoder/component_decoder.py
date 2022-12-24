@@ -68,7 +68,7 @@ class ComponentDecoder(Decoder):
 
                 has_values_ranges = WIDGET_CONFIGURATION_OFFSETS["has_values_ranges"].extract(self)
                 if has_values_ranges == 0x2:
-                    assert wformat == Format.FORMAT_IMAGE.value
+                    assert wformat == Format.FORMAT_IMAGE
                     WIDGET_CONFIGURATION_OFFSETS["values_ranges_start"].goto(self)
                     doffset = WIDGET_CONFIGURATION_OFFSETS["values_ranges_start"].value
                     for i in range(0, offset_info.size - doffset, 0x4):

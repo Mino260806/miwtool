@@ -89,7 +89,7 @@ class ComponentEncoder(Encoder):
         property_index = self.bump_property()
 
         wtype, category, wformat, ctype = self.component.widget_type.get_int_properties()
-        if wformat == Format.FORMAT_IMAGE.value:
+        if wformat == Format.FORMAT_IMAGE:
             if self.component.pivot_x:
                 self.set_buffer(0x20)
             else:
