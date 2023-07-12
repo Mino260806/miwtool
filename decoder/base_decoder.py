@@ -12,8 +12,10 @@ class Decoder:
     def read_string(self):
         string = []
         while (c := self.f.read(1)) != b"\x00":
-            string.append(c.decode("UTF-8"))
-        return "".join(string)
+            string.append(c)
+
+        bstring = b"".join(string)
+        return bstring.decode("UTF-8")
 
     def seek(self, x):
         self.f.seek(self.offset + x)

@@ -15,6 +15,7 @@ class Saver:
             with open(tmp_dir / "config.json", "w") as f:
                 json.dump(dumped_info,
                           f,
+                          ensure_ascii=False,
                           indent=4,
                           separators=(',', ': '))
 

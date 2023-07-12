@@ -26,7 +26,7 @@ class WatchFaceDecoder(Decoder):
         f = self.f
         header = self.read(4)
         if header != HEADER:
-            raise RuntimeError("Unkown header")
+            raise RuntimeError("Unknown header")
 
         preview_offset = HEADER_OFFSETS["preview_offset"].extract(self)
         wf.preview = ComponentDecoder(
