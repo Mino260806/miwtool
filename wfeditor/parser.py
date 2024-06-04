@@ -28,7 +28,7 @@ class WFEditorParser:
         self.folder = Path(src)
 
         with open(self.folder / "watchface.json", "r") as f:
-            self.data = json.loads(f.read())
+            self.data = json.loads(f.read().encode().decode('utf-8-sig'))
 
         self.parse()
 
